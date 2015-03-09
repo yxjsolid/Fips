@@ -135,8 +135,18 @@ char *DKM = "bf7007e11c5918e27c1cac11c3b6";
 #endif
 
 #if 1
-//[EB - SHA256]
+#if 0
+[EB]
 
+[Curve selected:  P-224]
+[SHA(s) supported (Used in the KDF function):  SHA224 SHA256 SHA384 SHA512]
+[MAC algorithm supported:  HMAC]
+[HMAC SHAs supported:  SHA512]
+[HMACKeySize(in bits):  112]
+[HMAC Tag length(in bits):  112]
+#endif
+
+//[EB - SHA256]
 
 //COUNT = 0
 char *deCAVS = "0d174b65b97c87e1cddebc6b2312cbe5018cc41bad441e09bd034bce";
@@ -173,6 +183,42 @@ char *KeyData = "4C664A9BCA73D9819538F659B4B675C72FB95AC2F86527D98254F85E1041CBF
 #endif
 
 
+void doHmac(char * key,long keyLen, char * iv, long ivLen)
+{
+
+	char *msg;
+	int len;
+
+	unsigned char out[EVP_MAX_MD_SIZE];
+    unsigned int outlen;
+
+	printf("keylen = %d \n", keyLen);
+	
+	myPrintValue("key", key, keyLen);
+
+	HMAC(EVP_sha512(),key,keyLen,iv,ivLen,out,&outlen);
+
+	myPrintValue("md", out, outlen);
+
+}
+
+
+void testHmac()
+{
+	char *key;
+	long keyLen;
+
+	char *msg;
+	long msgLen;
+	
+	key = hex2bin_m(DKM, &keyLen);
+
+	msg = hex2bin_m(MacData, &msgLen);
+
+
+	doHmac(key, keyLen,msg, msgLen);
+
+}
 
 void kdf(char * z, char * ol, int keyLen)
 {
@@ -181,7 +227,10 @@ void kdf(char * z, char * ol, int keyLen)
 	unsigned int i = 0;
 	int resp = 0;
 	char *cnt = "00000001";
+	char *cnt1 = "00000002";
  	char md[SHA256_DIGEST_LENGTH];
+	char *msg;
+	long len;
 #if 0	
 	EVP_MD *evp_md,
 	
@@ -207,24 +256,54 @@ void kdf(char * z, char * ol, int keyLen)
 	SHA256_CTX c;
 
 
+	
 
 	SHA256_Init(&c);
-	SHA256_Update(&c,cnt,8);
-	SHA256_Update(&c,z,64);
-	SHA256_Update(&c,ol,48);
+
+
+	msg = hex2bin_m(cnt, &len);
+	SHA256_Update(&c,msg,len);
+	myPrintValue("msg", msg, len);
+
+	
+	msg = hex2bin_m(z, &len);
+	SHA256_Update(&c,msg,len);
+
+	myPrintValue("z", msg, len);
+
+	msg = hex2bin_m(ol, &len);
+	SHA256_Update(&c,msg,len);
+	myPrintValue("ol", msg, len);
 
 
 	SHA256_Final(md,&c);
 
+	myPrintValue("md", md, keyLen);
 
-	myPrintValue("cnt", cnt, 8);
-	myPrintValue("ol", ol, 24);
-	myPrintValue("z", z, 32);
-	myPrintValue("ol", ol, 24);
 
+
+
+	SHA256_Init(&c);
+
+
+	msg = hex2bin_m(cnt1, &len);
+	SHA256_Update(&c,msg,len);
+	myPrintValue("msg", msg, len);
+
+	
+	msg = hex2bin_m(z, &len);
+	SHA256_Update(&c,msg,len);
+
+	myPrintValue("z", msg, len);
+
+	msg = hex2bin_m(ol, &len);
+	SHA256_Update(&c,msg,len);
+	myPrintValue("ol", msg, len);
+
+
+	SHA256_Final(md,&c);
 
 	myPrintValue("md", md, SHA256_DIGEST_LENGTH);
-
 
 
 	
@@ -243,7 +322,7 @@ void kdf(char * z, char * ol, int keyLen)
 }
 
 
-int main(int argc, char **argv)
+void test1()
 {
 
 	int curve_nids[5] = {0,0,0,0,0};
@@ -308,9 +387,25 @@ int main(int argc, char **argv)
 	myPrintValue("chash", chash, EVP_MAX_MD_SIZE);
 
 
-	kdf(Z, OI, 512);
+	kdf(Zx, OI, 512);
 	
-	return 1;
+}
+
+
+void testKdf()
+{
+
+	kdf(Z, OI, 112);
+	
+
+
+	
+}
+
+
+int main(int argc, char **argv)
+{
+	testHmac();
 }
 
 
