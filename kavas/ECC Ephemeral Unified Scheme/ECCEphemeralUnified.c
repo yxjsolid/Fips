@@ -134,7 +134,7 @@ char *DKM = "bf7007e11c5918e27c1cac11c3b6";
 
 #endif
 
-#if 1
+#if 0
 #if 0
 [EB]
 
@@ -165,6 +165,26 @@ char *DKM = "e6af0cfedd77ee94164e6c2258fd";
 
 #endif
 
+#if 1
+
+
+
+//COUNT = 4
+char *deCAVS = "67db23ed9c266eff1d51cebb79e5b33631b4146140f182420c378ffb";
+char *QeCAVSx = "8749df62e7308ac5cfaf00870fbec33d34623cc71f84a78ba195516b";
+char *QeCAVSy = "0f357dc8bb852035c1e149f4ba21cd6c1d0b85315df2331dbddddb4a";
+char *Nonce = "9eded6b00e9f9a94199b9228217957fa";
+char *deIUT = "5b9c0da28c341801cb56f4c07a0b808bf8d1b178857141ced61ee16c";
+char *QeIUTx = "c06266fec0d19c6a2a424c7414f3fe86c29e73a9a2620852e19d4cb6";
+char *QeIUTy = "e0e47bfdaa1c493ee142191a318c0646bdb8726c0bbab3d1d0396859";
+char *OI = "a1b2c3d4e54341565369645ae649f8943990a5434463939061458049f0a76f7c9b180545dfb633e4c7e81512fb4f1a";
+char *CAVSTag = "fcbb30917417f6e35fffb2f3d1d6";
+char *Z = "d5a7c611f89117925a1526245050d6a36e5353cdfadd13fc7d936449";
+char *MacData = "5574616e646172642054657374204d6573736167659eded6b00e9f9a94199b9228217957fa";
+char *DKM = "5a7ec7766817188c54495cd10cde";
+//Result = F (11 - MACData changed )
+#endif
+
 
 #if 1
 //P-256
@@ -181,6 +201,9 @@ char *DerivedKeyMaterial = "4C664A9BCA73D9819538F659B4B675C72FB95AC2F86527D98254
 char *KeyData = "4C664A9BCA73D9819538F659B4B675C72FB95AC2F86527D98254F85E1041CBFA386EEA63B4DA8803B31383B544D33A0BC781F7C2F66A8CF41DE148E2D3328173";
 
 #endif
+
+
+
 
 
 void doHmac(char * key,long keyLen, char * iv, long ivLen)
@@ -215,7 +238,7 @@ void testHmac()
 
 	msg = hex2bin_m(MacData, &msgLen);
 
-
+	//Standard Test Message¡±,
 	doHmac(key, keyLen,msg, msgLen);
 
 }
