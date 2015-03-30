@@ -11,6 +11,16 @@
 
 
 #include "fips_utl.h"
+char *dkmMsg = "Standard Test Message";
+
+typedef struct _kasvsCfg
+{
+	int 			curve_nids;
+	int 			hmacKeyBitSize;
+	int 			hmacTagBitLen;
+	const EVP_MD 	*hmacMD;
+}kasvsCfg;
+
 
 static EC_POINT *make_peer(EC_GROUP *group, BIGNUM *x, BIGNUM *y)
 	{
@@ -42,8 +52,6 @@ static EC_POINT *make_peer(EC_GROUP *group, BIGNUM *x, BIGNUM *y)
 	}
 
 
-
-
 void myOutputValue(char *tag, unsigned char *val, int len, FILE *rfp,int bitmode)
     {
     char obuf[2048];
@@ -56,11 +64,13 @@ void myOutputValue(char *tag, unsigned char *val, int len, FILE *rfp,int bitmode
 	}
     else
 	{
-	int i;
-    	fprintf(rfp, "%s = ", tag);
-	for (i = 0; i < len; i++)
-		fprintf(rfp, "%02x", val[i]);
-	fputs(RESP_EOL, rfp);
+		int i;
+	    fprintf(rfp, "%s = ", tag);
+		for (i = 0; i < len; i++)
+		{
+			fprintf(rfp, "%02x", val[i]);
+		}
+		fputs(RESP_EOL, rfp);
 	}
 
 #if VERBOSE
@@ -75,138 +85,7 @@ void myPrintValue(char *tag, unsigned char *val, int len)
 
 }
 
-//[EB - SHA512]
-//[Curve selected:  B-233]
-
-
-
-#if 0
-//COUNT = 18
-char *deCAVS = "000000ffc7d15174cd268365ba064f70d0aa04d6c9e8f340a2ff0cd4b7fe1369";
-char *QeCAVSx = "000003e246dcac5c843658c82452c9d17eed2eea5de92ee5939d9dc2acc2c51b";
-char *QeCAVSy = "000001ab4977bd5e84089a8ff18fe929dc0cc56a4d3d128a31ea14836a72f811";
-char *deIUT = "000000de7a63a0ac4e0d78525b748736c22268854e4b2b545ad61ae1b6629913";
-char *QeIUTx = "0000015303855f7b030ae28a2d22582d8e37914f11f4dfc8d206abfe6966c9b7";
-char *QeIUTy = "000001719074881420b6fb96369e72ae53a0f948a643094fdbb3da50bae2e041";
-char *Z = "00c47e27e1d0004b3058168b70d833014649a7d669effd7ad079c2843207";
-char *CAVSHashZZ = "24f3817fc122ba1b080107ac29076b89aa210a673c16f9616227a347b1d0813a226c3f401a2db23f9e92fe120ee68601c15446de9c637f7819c18d3c174b0b5e";
-//Result = F (3 - CAVS's Ephemeral public key X fails PKV 5.6.2.5)
-
-#endif
-
-#if 0
-//[EB - SHA224]
-
-
-//COUNT = 0
-char *deCAVS = "17eeeefbb3f3b2c901d7d083a88bbb1c3d152e4e234d48469ae7488c";
-char *QeCAVSx = "606e1d22db02056ca548d9a8e8f5b14b810abff0a2dbe5bc5800de7e";
-char *QeCAVSy = "b23caff3791f7a390d4ef49710adf2b1805dd52b793df80b31d89b80";
-char *Nonce = "3c4967abb412bed7e4a0f1e309933212";
-char *deIUT = "ff8d67a408fadc9e911d7284af0acae29a4e3fc7c2862d03829ef624";
-char *QeIUTx = "a92c5cb077bbf429ae16352f7ddbb687927860b5fc5d5208d5e8a14e";
-char *QeIUTy = "ee2e8616586ee3fbb7dc00fb5c85e64d27b17f2e9a862d73af9fbaf5";
-char *OI = "a1b2c3d4e5434156536964f9c55e0b49ae535339c98384a2d9b02974606274a8c3818375a923e3c7a4a353ed13f3ca";
-char *CAVSTag = "40a587c5c09c025a551453cfcdfb";
-char *Z = "deac28b2b9c6d70397edca14d51a86e6cc65b3e1249f98e3db322e7b";
-char *MacData = "5374616e646172642054657374204d6573736167653c4967abb412bed7e4a0f1e309933212";
-char *DKM = "085bf63acea58c9b4d1abdd26572";
-//Result = F (3 - CAVS's Ephemeral public key X fails PKV 5.6.2.5)
-
-
-#endif
-
-#if 0
-//COUNT = 2
-char *deCAVS = "bfa09bcfee9104c0dd260962d77f67d7014c9d2e6e070ca30eed53ac";
-char *QeCAVSx = "e9fe70ab37c92e07952383a8e5e4e5ba29d5ee35c9305389a76eb12d";
-char *QeCAVSy = "4a85aec257da3a0e264bd2546b2fe6041e335627e80ce2fe0a786f65";
-char *Nonce = "63a040ca9fb8d1cbc11e749d568035f1";
-char *deIUT = "7c6b7283b9e401ebca08811358aa8a891f34a26f6a04507f8ffacb4c";
-char *QeIUTx = "6219aa51a67d675af7106ca5e9b5e283585a2eacd9074a02a1d91068";
-char *QeIUTy = "19a7ebbdfa561fcf9028ab0e6fbfeba582102a4f71bb6822711fe27e";
-char *OI = "a1b2c3d4e54341565369646138c266649b914df6545f3f4a151e35073dc61bfab7a6d5071ff7806627b7fa0c3ab5a4";
-char *CAVSTag = "d52353ba2ffcb0dc3018dc1d234c";
-char *Z = "0e8fb4d3c1826a02497a2fb82d31b3d87515b5d7b786fd97ba55d1b1";
-char *MacData = "5374616e646172642054657374204d65737361676563a040ca9fb8d1cbc11e749d568035f1";
-char *DKM = "bf7007e11c5918e27c1cac11c3b6";
-//Result = P (13 - Z value should have leading 0 nibble )
-
-#endif
-
-#if 0
-#if 0
-[EB]
-
-[Curve selected:  P-224]
-[SHA(s) supported (Used in the KDF function):  SHA224 SHA256 SHA384 SHA512]
-[MAC algorithm supported:  HMAC]
-[HMAC SHAs supported:  SHA512]
-[HMACKeySize(in bits):  112]
-[HMAC Tag length(in bits):  112]
-#endif
-
-//[EB - SHA256]
-
-//COUNT = 0
-char *deCAVS = "0d174b65b97c87e1cddebc6b2312cbe5018cc41bad441e09bd034bce";
-char *QeCAVSx = "d2d3b78e8c9426ea109d5900fe78e432766240b72e9d529e494ce699";
-char *QeCAVSy = "e8e3f3eeab525456d4b23de625d503c29c57e966b9c9d91a8448f92c";
-char *Nonce = "0bcde6707ec35b498c0e58fbbceeaa70";
-char *deIUT = "c8a522ec5b021a38608f909fe8629032af99840a4264dfbdf533dba6";
-char *QeIUTx = "0d24a83b2e985747ccd0d1c93b254dc00a30294bdd6235217069bf02";
-char *QeIUTy = "0121f2811ca245eb5d9001c3ca42ee8d14e2c3199603ba2bcaa5c5d0";
-char *OI = "a1b2c3d4e54341565369646dd91afbd96a2cbbfc1a0f74ee323cc9939853ef1c42bbc0d1f0890b0e1ba42f8c2826e8";
-char *CAVSTag = "777485bf797319fb9268035cc497";
-char *Z = "717aec8c7d2cbcc76e724cd1ce77e5d88aaa9664782978c8ab49f6e7";
-char *MacData = "5374616e646172642054657374204d6573736167650bcde6707ec35b498c0e58fbbceeaa70";
-char *DKM = "e6af0cfedd77ee94164e6c2258fd";
-//Result = P (0 - Correct)
-
-#endif
-
-#if 1
-
-
-
-//COUNT = 4
-char *deCAVS = "67db23ed9c266eff1d51cebb79e5b33631b4146140f182420c378ffb";
-char *QeCAVSx = "8749df62e7308ac5cfaf00870fbec33d34623cc71f84a78ba195516b";
-char *QeCAVSy = "0f357dc8bb852035c1e149f4ba21cd6c1d0b85315df2331dbddddb4a";
-char *Nonce = "9eded6b00e9f9a94199b9228217957fa";
-char *deIUT = "5b9c0da28c341801cb56f4c07a0b808bf8d1b178857141ced61ee16c";
-char *QeIUTx = "c06266fec0d19c6a2a424c7414f3fe86c29e73a9a2620852e19d4cb6";
-char *QeIUTy = "e0e47bfdaa1c493ee142191a318c0646bdb8726c0bbab3d1d0396859";
-char *OI = "a1b2c3d4e54341565369645ae649f8943990a5434463939061458049f0a76f7c9b180545dfb633e4c7e81512fb4f1a";
-char *CAVSTag = "fcbb30917417f6e35fffb2f3d1d6";
-char *Z = "d5a7c611f89117925a1526245050d6a36e5353cdfadd13fc7d936449";
-char *MacData = "5574616e646172642054657374204d6573736167659eded6b00e9f9a94199b9228217957fa";
-char *DKM = "5a7ec7766817188c54495cd10cde";
-//Result = F (11 - MACData changed )
-#endif
-
-
-#if 1
-//P-256
-//sha-256
-char *deU = "814264145F2F56F2E96A8E337A1284993FAF432A5ABCE59E867B7291D507A3AF";
-char *QeU_x = "2AF502F3BE8952F2C9B5A8D4160D09E97165BE50BC42AE4A5E8D3B4BA83AEB15";
-char *QeU_y = "EB0FAF4CA986C4D38681A0F9872D79D56795BD4BFF6E6DE3C0F5015ECE5EFD85";
-char *deV = "2CE1788EC197E096DB95A200CC0AB26A19CE6BCCAD562B8EEE1B593761CF7F41";
-char *QeV_x = "B120DE4AA36492795346E8DE6C2C8646AE06AAEA279FA775B3AB0715F6CE51B0";
-char *QeV_y = "9F1B7EECE20D7B5ED8EC685FA3F071D83727027092A8411385C34DDE5708B2B6";
-char *Zx = "DD0F5396219D1EA393310412D19A08F1F5811E9DC8EC8EEA7F80D21C820C2788";
-char *OtherInfo = "123456789ABCDEF0414C494345313233424F424259343536";
-char *DerivedKeyMaterial = "4C664A9BCA73D9819538F659B4B675C72FB95AC2F86527D98254F85E1041CBFA386EEA63B4DA8803B31383B544D33A0BC781F7C2F66A8CF41DE148E2D3328173";
-char *KeyData = "4C664A9BCA73D9819538F659B4B675C72FB95AC2F86527D98254F85E1041CBFA386EEA63B4DA8803B31383B544D33A0BC781F7C2F66A8CF41DE148E2D3328173";
-
-#endif
-
-
-
-
-
-void doHmac(char * key,long keyLen, char * iv, long ivLen)
+void kavasVerifyTag(const EVP_MD * md, char * key,long keyLen, char * macData, long macDataLen, char * tag, int tagLen)
 {
 
 	char *msg;
@@ -216,205 +95,63 @@ void doHmac(char * key,long keyLen, char * iv, long ivLen)
     unsigned int outlen;
 
 	printf("keylen = %d \n", keyLen);
+	printf("ivLen = %d \n", macDataLen);
 	
 	myPrintValue("key", key, keyLen);
+	myPrintValue("macData", macData, macDataLen);
 
-	HMAC(EVP_sha512(),key,keyLen,iv,ivLen,out,&outlen);
 
-	myPrintValue("md", out, outlen);
+	HMAC(md,key,keyLen,macData,macDataLen,out,&outlen);
+
+	myPrintValue("md", out, tagLen);
+
+
+	if (memcmp(out, tag, tagLen))
+	{
+		printf(" !!!! not matcht \n");
+	}
+
+	
 
 }
 
 
-void testHmac()
+
+void kavasKDF(const EVP_MD * md, char * z, int zLen, char * oi, int oiLen, unsigned char * dkm, int keyLen)
 {
-	char *key;
-	long keyLen;
-
-	char *msg;
-	long msgLen;
+	int hashLen = md->md_size;
+ 	char digest[SHA512_DIGEST_LENGTH];
+	unsigned char *dkmPtr = dkm;
+	char *buff = NULL;
 	
-	key = hex2bin_m(DKM, &keyLen);
-
-	msg = hex2bin_m(MacData, &msgLen);
-
-	//Standard Test Message¡±,
-	doHmac(key, keyLen,msg, msgLen);
-
-}
-
-void kdf(char * z, char * ol, int keyLen)
-{
-	//int hashLen = SHA512_CBLOCK;
-	int hashLen = SHA256_DIGEST_LENGTH *8;
-	unsigned int i = 0;
-	int resp = 0;
-	char *cnt = "00000001";
-	char *cnt1 = "00000002";
- 	char md[SHA256_DIGEST_LENGTH];
-	char *msg;
-	long len;
-#if 0	
-	EVP_MD *evp_md,
-	
-
-
-	unsigned char out[EVP_MAX_MD_SIZE];
-	HMAC_CTX c;
-	static unsigned char m[EVP_MAX_MD_SIZE];
+	unsigned int cnt = 1;
+	unsigned int cnt_bigendian = 0;
+	int 		cntLen = 4;
+	unsigned int reps =  keyLen/hashLen;
 
 	
-	evp_md  = EVP_sha256();
-	HMAC_CTX_init(&c);
-	if (!HMAC_Init(&c,key,key_len,evp_md))
-		goto err;
-	if (!HMAC_Update(&c,out,n))
-		goto err;
-	if (!HMAC_Final(&c,md,md_len))
-		goto err;
-	HMAC_CTX_cleanup(&c);
-	return md;
-#endif
+	do
+	{
+		buff = malloc(cntLen + zLen + oiLen);
+		cnt_bigendian = htonl(cnt);
+		memcpy(buff, (unsigned char*)&cnt_bigendian, cntLen);
+		memcpy(buff + cntLen, z, zLen);
+		memcpy(buff + cntLen + zLen, oi, oiLen);
+		EVP_Digest(buff, cntLen + zLen + oiLen, digest,   NULL, md, NULL);
 
-	SHA256_CTX c;
+		memcpy(dkmPtr, digest, keyLen);
+		dkmPtr += keyLen;
+		free(buff);
 
-
-	
-
-	SHA256_Init(&c);
-
-
-	msg = hex2bin_m(cnt, &len);
-	SHA256_Update(&c,msg,len);
-	myPrintValue("msg", msg, len);
-
-	
-	msg = hex2bin_m(z, &len);
-	SHA256_Update(&c,msg,len);
-
-	myPrintValue("z", msg, len);
-
-	msg = hex2bin_m(ol, &len);
-	SHA256_Update(&c,msg,len);
-	myPrintValue("ol", msg, len);
-
-
-	SHA256_Final(md,&c);
-
-	myPrintValue("md", md, keyLen);
-
-
-
-
-	SHA256_Init(&c);
-
-
-	msg = hex2bin_m(cnt1, &len);
-	SHA256_Update(&c,msg,len);
-	myPrintValue("msg", msg, len);
-
-	
-	msg = hex2bin_m(z, &len);
-	SHA256_Update(&c,msg,len);
-
-	myPrintValue("z", msg, len);
-
-	msg = hex2bin_m(ol, &len);
-	SHA256_Update(&c,msg,len);
-	myPrintValue("ol", msg, len);
-
-
-	SHA256_Final(md,&c);
-
-	myPrintValue("md", md, SHA256_DIGEST_LENGTH);
-
-
-	
-	resp = keyLen/hashLen;
-
-	printf("hashLen = %d \n", hashLen);
-	printf("keyLen = %d \n", keyLen);
-
-	printf("resp = %d \n", resp);
-
-	
-
-
-	
+	}while(cnt++ < reps);
 
 }
 
 
-void test1()
-{
-
-	int curve_nids[5] = {0,0,0,0,0};
-
-	BIGNUM *cx = NULL, *cy = NULL;
-	BIGNUM *id = NULL, *ix = NULL, *iy = NULL;
 
 
-	const EVP_MD *md = NULL;
 
-	EC_KEY *ec = NULL;
-	EC_POINT *peerkey = NULL;
-	unsigned char *Z;
-	unsigned char chash[EVP_MAX_MD_SIZE];
-	int Zlen;
-	EC_GROUP *group = NULL;
-	int ret = 0;
-
-	deCAVS = deU;
-	QeCAVSx = QeU_x;
-	QeCAVSy = QeU_y;
-	deIUT = deV;
-	QeIUTx = QeV_x;
-	QeIUTy = QeV_y;
-	OI = OtherInfo;
-	Z= Zx;
-
-	md = EVP_sha256();
-
-	do_hex2bn(&ix, QeIUTx);
-	do_hex2bn(&iy, QeIUTy);
-
-	do_hex2bn(&id, deIUT);
-	do_hex2bn(&cx, QeCAVSx);
-	do_hex2bn(&cy, QeCAVSy);
-
-
-	group = EC_GROUP_new_by_curve_name(NID_X9_62_prime256v1);
-
-
-	ec = EC_KEY_new();
-	EC_KEY_set_flags(ec, EC_FLAG_COFACTOR_ECDH);
-	EC_KEY_set_group(ec, group);
-	peerkey = make_peer(group, cx, cy);
-
-	ret = EC_KEY_set_public_key_affine_coordinates(ec, cx, cy);
-	printf("\n\nret = %d\n", ret);
-		
-	ret = EC_KEY_set_public_key_affine_coordinates(ec, ix, iy);
-
-	printf("\n\nret = %d\n", ret);
-	EC_KEY_set_private_key(ec, id);
-		
-	Zlen = (EC_GROUP_get_degree(group) + 7)/8;
-	Z = OPENSSL_malloc(Zlen);
-	ECDH_compute_key(Z, Zlen, peerkey, ec, 0);
-
-	myPrintValue("Z", Z, Zlen);
-
-	FIPS_digest(Z, Zlen, chash, NULL, md);
-
-	myPrintValue("chash", chash, EVP_MAX_MD_SIZE);
-
-
-	kdf(Zx, OI, 512);
-	
-}
-
-
+#if 0
 void testKdf()
 {
 
@@ -424,11 +161,462 @@ void testKdf()
 
 	
 }
+#endif
+static int lookup_curve2(char *cname)
+	{
+	char *p;
+	p = strchr(cname, ']');
+	if (!p)
+		{
+		fprintf(stderr, "Parse error: missing ]\n");
+		return NID_undef;
+		}
+	*p = 0;
+
+	if (!strcmp(cname, "B-163"))
+		return NID_sect163r2;
+	if (!strcmp(cname, "B-233"))
+		return NID_sect233r1;
+	if (!strcmp(cname, "B-283"))
+		return NID_sect283r1;
+	if (!strcmp(cname, "B-409"))
+		return NID_sect409r1;
+	if (!strcmp(cname, "B-571"))
+		return NID_sect571r1;
+	if (!strcmp(cname, "K-163"))
+		return NID_sect163k1;
+	if (!strcmp(cname, "K-233"))
+		return NID_sect233k1;
+	if (!strcmp(cname, "K-283"))
+		return NID_sect283k1;
+	if (!strcmp(cname, "K-409"))
+		return NID_sect409k1;
+	if (!strcmp(cname, "K-571"))
+		return NID_sect571k1;
+	if (!strcmp(cname, "P-192"))
+		return NID_X9_62_prime192v1;
+	if (!strcmp(cname, "P-224"))
+		return NID_secp224r1;
+	if (!strcmp(cname, "P-256"))
+		return NID_X9_62_prime256v1;
+	if (!strcmp(cname, "P-384"))
+		return NID_secp384r1;
+	if (!strcmp(cname, "P-521"))
+		return NID_secp521r1;
+
+	fprintf(stderr, "Unknown Curve name %s\n", cname);
+	return NID_undef;
+	}
+
+static int lookup_curve(char *cname)
+	{
+	char *p;
+	p = strchr(cname, ':');
+	if (!p)
+		{
+		fprintf(stderr, "Parse error: missing :\n");
+		return NID_undef;
+		}
+	cname = p + 1;
+	while(isspace(*cname))
+		cname++;
+	return lookup_curve2(cname);
+	}
+
+static const EVP_MD *eparse_kdf_md(char *line)
+{
+	char *p;
+	if (line[0] != '[' || line[1] != 'E')
+		return NULL;
+	p = strchr(line, '-');
+	if (!p)
+		return NULL;
+	line = p + 1;
+	p = strchr(line, ']');
+	if (!p)
+		return NULL;
+	*p = 0;
+	p = line;
+	while(isspace(*p))
+		p++;
+	if (!strcmp(p, "SHA1"))
+		return EVP_sha1();
+	else if (!strcmp(p, "SHA224"))
+		return EVP_sha224();
+	else if (!strcmp(p, "SHA256"))
+		return EVP_sha256();
+	else if (!strcmp(p, "SHA384"))
+		return EVP_sha384();
+	else if (!strcmp(p, "SHA512"))
+		return EVP_sha512();
+	else
+		return NULL;
+}
+
+static const EVP_MD *eparse_hmac_md(char *line)
+{
+	char *p;
+	p = strchr(line, ':');
+	if (!p)
+		return NULL;
+	line = p + 1;
+	p = strchr(line, ']');
+	if (!p)
+		return NULL;
+	*p = 0;
+	p = line;
+	while(isspace(*p))
+		p++;
+	if (!strcmp(p, "SHA1"))
+		return EVP_sha1();
+	else if (!strcmp(p, "SHA224"))
+		return EVP_sha224();
+	else if (!strcmp(p, "SHA256"))
+		return EVP_sha256();
+	else if (!strcmp(p, "SHA384"))
+		return EVP_sha384();
+	else if (!strcmp(p, "SHA512"))
+		return EVP_sha512();
+	else
+		return NULL;
+}
+
+static int eparse_size(char *line)
+{
+	char *p;
+	int size = 0;
+	p = strchr(line, ':');
+	if (!p)
+		return NULL;
+	line = p + 1;
+	p = strchr(line, ']');
+	if (!p)
+		return NULL;
+	*p = 0;
+	p = line;
+	while(isspace(*p))
+		p++;
+
+	size = atoi(p); /* in bits */
+	printf("eparse_size = %d \n", size);
+
+	return size;
+}
+
+int kavasHashZ(EC_GROUP *group, unsigned char *Z, int zLen, BIGNUM *cx, BIGNUM *cy, BIGNUM *id, BIGNUM *ix, BIGNUM *iy)
+{
+	EC_KEY *ec = NULL;
+	EC_POINT *peerkey = NULL;
+	int ret;
+
+
+	ec = EC_KEY_new();
+	EC_KEY_set_flags(ec, EC_FLAG_COFACTOR_ECDH);
+	EC_KEY_set_group(ec, group);
+	peerkey = make_peer(group, cx, cy);
+
+	if (!EC_KEY_set_public_key_affine_coordinates(ec, cx, cy))
+	{
+		printf("key error \n");
+		return 0;
+	}
+	
+		
+	if (!EC_KEY_set_public_key_affine_coordinates(ec, ix, iy))
+	{
+		printf("key error \n");
+		return 0;
+	}
+
+	
+	EC_KEY_set_private_key(ec, id);
+		
+
+	ECDH_compute_key(Z, zLen, peerkey, ec, 0);
+	myPrintValue("Z", Z, zLen);
+
+}
+
+
+
+int ephemerallMain(int argc, char **argv)
+{
+	char **args = argv + 1;
+	int argn = argc - 1;
+	FILE *in, *out;
+	char buf[2048], lbuf[2048];
+	unsigned char *rhash = NULL;
+	long rhashlen;
+	BIGNUM *cx = NULL, *cy = NULL;
+	BIGNUM *id = NULL, *ix = NULL, *iy = NULL;
+	
+	const EVP_MD *kdfMd = NULL;
+	EC_GROUP *group = NULL;
+	char *keyword = NULL, *value = NULL;
+	int do_verify = -1, exout = 0;
+	int rv = 1;
+
+
+	int curve_nids[5];
+
+	kasvsCfg curve_cfg[5];
+	int param_set = -1;
+	EC_KEY *ec = NULL;
+		
+	unsigned char *Z;
+	unsigned char chash[EVP_MAX_MD_SIZE];
+	int Zlen;
+	int ret;
+
+	unsigned char *oi = NULL;
+	long oiLen = 0;
+
+	unsigned char *nonce = NULL;
+	int nonceLen = 0;
+
+	unsigned char *dkm = NULL;
+
+
+	unsigned char * macData = NULL;
+	int 			macDataLen = 0;
+
+	unsigned char *CAVSTag = NULL;
+	int				tagLen = 0;
+
+
+	int keySize = 0;
+
+	memset((unsigned char*)&(curve_cfg), 0, sizeof (curve_cfg));
+	
+
+	if (argn == 2)
+		{
+		in = fopen(*args, "r");
+		if (!in)
+			{
+			fprintf(stderr, "Error opening input file\n");
+			exit(1);
+			}
+		out = fopen(args[1], "w");
+		if (!out)
+			{
+			fprintf(stderr, "Error opening output file\n");
+			exit(1);
+			}
+		}
+	else if (argn == 0)
+		{
+		in = stdin;
+		out = stdout;
+		}
+	else
+		{
+		fprintf(stderr,"%s [dhver|dhgen|] [-exout] (infile outfile)\n",argv[0]);
+		exit(1);
+		}
+
+	while (fgets(buf, sizeof(buf), in) != NULL)
+	{
+		fputs(buf, out);
+		if (buf[0] == '[' && buf[1] == 'E')
+		{
+			int c = buf[2];
+			if (c < 'A' || c > 'E')
+				goto parse_error;
+			param_set = c - 'A';
+			/* If just [E?] then initial paramset */
+			if (buf[3] == ']')
+				continue;
+			if (group)
+				EC_GROUP_free(group);
+			group = EC_GROUP_new_by_curve_name(curve_cfg[c - 'A'].curve_nids);
+		}
+		
+		if (strlen(buf) > 10 && !strncmp(buf, "[Curve", 6))
+		{
+			int nid;
+			if (param_set == -1)
+				goto parse_error;
+			nid = lookup_curve(buf);
+			if (nid == NID_undef)
+				goto parse_error;
+			curve_cfg[param_set].curve_nids = nid;
+		}
+
+		if (strlen(buf) > 10 && !strncmp(buf, "[HMAC SHAs", 10))
+		{
+			kdfMd = eparse_hmac_md(buf);
+			if (kdfMd == NULL)
+				goto parse_error;
+
+			curve_cfg[param_set].hmacMD = kdfMd;
+			continue;
+		}
+
+		if (strlen(buf) > 10 && !strncmp(buf, "[HMACKeySize", 12))
+		{
+			int size = -1;
+			size = eparse_size(buf);
+			
+			curve_cfg[param_set].hmacKeyBitSize = size;
+			continue;
+		}
+
+		if (strlen(buf) > 10 && !strncmp(buf, "[HMAC Tag length", 16))
+		{
+			int size = -1;
+			size = eparse_size(buf);
+			
+			curve_cfg[param_set].hmacTagBitLen = size;
+			continue;
+		}
+
+		if (strlen(buf) > 4 && buf[0] == '[' && buf[2] == '-')
+		{
+			int nid = lookup_curve2(buf + 1);
+			if (nid == NID_undef)
+				goto parse_error;
+			if (group)
+				EC_GROUP_free(group);
+			group = EC_GROUP_new_by_curve_name(nid);
+			if (!group)
+				{
+				fprintf(stderr, "ERROR: unsupported curve %s\n", buf + 1);
+				return 1;
+				}
+		}
+
+		if (strlen(buf) > 6 && !strncmp(buf, "[E", 2))
+		{
+			kdfMd = eparse_kdf_md(buf);
+			if (kdfMd == NULL)
+				goto parse_error;
+			continue;
+		}
+
+		
+		if (!parse_line(&keyword, &value, lbuf, buf))
+			continue;
+
+
+//		printf("keyworkd = %s \n", keyword);
+		if (!strcmp(keyword, "QeCAVSx") || !strcmp(keyword, "QCAVSx"))
+			{
+			if (!do_hex2bn(&cx, value))
+				goto parse_error;
+			}
+		else if (!strcmp(keyword, "QeCAVSy") || !strcmp(keyword, "QCAVSy"))
+			{
+			if (!do_hex2bn(&cy, value))
+				goto parse_error;
+
+#if 0
+			if (do_verify == 0)
+				ec_output_Zhash(out, exout, group,
+						NULL, NULL, NULL,
+						cx, cy, md, rhash, rhashlen);
+#endif
+			}
+		else if (!strcmp(keyword, "deIUT"))
+			{
+			if (!do_hex2bn(&id, value))
+				goto parse_error;
+			}
+		else if (!strcmp(keyword, "QeIUTx"))
+			{
+			if (!do_hex2bn(&ix, value))
+				goto parse_error;
+			}
+		else if (!strcmp(keyword, "QeIUTy"))
+			{
+			if (!do_hex2bn(&iy, value))
+				goto parse_error;
+			}
+
+		else if (!strcmp(keyword, "Nonce"))
+		{
+			nonce = hex2bin_m(value, &nonceLen);
+			if (macData)
+			{
+				free(macData);
+			}
+
+			macDataLen = strlen(dkmMsg) + nonceLen;
+			macData = malloc(macDataLen);
+			memcpy(macData, dkmMsg, strlen(dkmMsg));
+			memcpy(macData + strlen(dkmMsg), nonce, nonceLen);
+			
+		}		
+		else if (!strcmp(keyword, "OI"))
+			{
+			if (!kdfMd)
+				goto parse_error;
+			oi = hex2bin_m(value, &oiLen);
+
+		}
+		else if (!strcmp(keyword, "CAVSTag"))
+		{
+			if (!kdfMd)
+				goto parse_error;
+			CAVSTag = hex2bin_m(value, &tagLen);
+
+
+			Zlen = (EC_GROUP_get_degree(group) + 7)/8;
+
+			Z = malloc(Zlen);
+
+			kavasHashZ(group, Z, Zlen, cx, cy, id, ix, iy);
+			keySize = curve_cfg[param_set].hmacKeyBitSize/8;
+
+
+
+			dkm = malloc(keySize);
+			memset(dkm, 0, keySize);
+			kavasKDF(kdfMd, Z, Zlen, oi, oiLen, dkm, keySize);
+			
+			myPrintValue("dkm", dkm, keySize);
+			kavasVerifyTag(curve_cfg[param_set].hmacMD, dkm, keySize, macData, macDataLen, CAVSTag, tagLen);
+
+			free(Z);
+			free(dkm);
+		}
+
+
+	}
+	rv = 0;
+	parse_error:
+	if (id)
+		BN_free(id);
+	if (ix)
+		BN_free(ix);
+	if (iy)
+		BN_free(iy);
+	if (cx)
+		BN_free(cx);
+	if (cy)
+		BN_free(cy);
+	if (group)
+		EC_GROUP_free(group);
+	if (in && in != stdin)
+		fclose(in);
+	if (out && out != stdout)
+		fclose(out);
+	if (rv)
+		fprintf(stderr, "Error Parsing request file\n");
+	return rv;
+	}
+
+
 
 
 int main(int argc, char **argv)
 {
-	testHmac();
+//	testHmac();
+
+
+	//test1();
+
+	ephemerallMain(argc, argv);
 }
 
 
