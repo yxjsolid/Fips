@@ -341,7 +341,9 @@ int kavasHashZ(EC_GROUP *group, unsigned char *Z, int zLen, BIGNUM *cd, BIGNUM *
 
 }
 
-int ephemerallMain(int argc, char **argv)
+
+
+int ECCFullUnifiedMain(int argc, char **argv)
 {
 	char **args = argv + 1;
 	int argn = argc - 1;
@@ -349,8 +351,11 @@ int ephemerallMain(int argc, char **argv)
 	char buf[2048], lbuf[2048];
 	unsigned char *rhash = NULL;
 	long rhashlen;
-	BIGNUM *cd=NULL, *cx = NULL, *cy = NULL;
-	BIGNUM *id = NULL, *ix = NULL, *iy = NULL;
+	BIGNUM *cd=NULL, *ecx = NULL, *ecy = NULL;
+	BIGNUM *scx = NULL, *scy = NULL;
+	BIGNUM *sid = NULL, *ix = NULL, *iy = NULL;
+	BIGNUM *eid = NULL;
+
 	
 	const EVP_MD *kdfMd = NULL;
 	EC_GROUP *group = NULL;
@@ -364,8 +369,10 @@ int ephemerallMain(int argc, char **argv)
 	kasvsCfg curve_cfg[5];
 	int param_set = -1;
 	EC_KEY *ec = NULL;
-		
+
 	unsigned char *Z;
+	unsigned char *Zs;
+	unsigned char *Ze;
 	unsigned char chash[EVP_MAX_MD_SIZE];
 	int Zlen;
 	int ret;
@@ -503,23 +510,32 @@ int ephemerallMain(int argc, char **argv)
 
 
 //		printf("keyworkd = %s \n", keyword);
-		if (!strcmp(keyword, "QeCAVSx") || !strcmp(keyword, "QCAVSx"))
+		if (!strcmp(keyword, "QeCAVSx"))
 			{
-			if (!do_hex2bn(&cx, value))
+			if (!do_hex2bn(&ecx, value))
 				goto parse_error;
 			}
-		else if (!strcmp(keyword, "QeCAVSy") || !strcmp(keyword, "QCAVSy"))
+		else if (!strcmp(keyword, "QeCAVSy"))
 			{
-			if (!do_hex2bn(&cy, value))
+			if (!do_hex2bn(&ecy, value))
 				goto parse_error;
 
-#if 0
-			if (do_verify == 0)
-				ec_output_Zhash(out, exout, group,
-						NULL, NULL, NULL,
-						cx, cy, md, rhash, rhashlen);
-#endif
 			}
+
+		else if (!strcmp(keyword, "QsCAVSx"))
+			{
+			if (!do_hex2bn(&scx, value))
+				goto parse_error;
+
+			}
+
+		else if (!strcmp(keyword, "QsCAVSy"))
+			{
+			if (!do_hex2bn(&scy, value))
+				goto parse_error;
+
+			}
+
 
 		else if (!strcmp(keyword, "deCAVS"))
 			{
@@ -529,7 +545,12 @@ int ephemerallMain(int argc, char **argv)
 		
 		else if (!strcmp(keyword, "deIUT"))
 			{
-			if (!do_hex2bn(&id, value))
+			if (!do_hex2bn(&eid, value))
+				goto parse_error;
+			}
+		else if (!strcmp(keyword, "dsIUT"))
+			{
+			if (!do_hex2bn(&sid, value))
 				goto parse_error;
 			}
 		else if (!strcmp(keyword, "QeIUTx"))
@@ -573,16 +594,26 @@ int ephemerallMain(int argc, char **argv)
 
 			Zlen = (EC_GROUP_get_degree(group) + 7)/8;
 
-			Z = malloc(Zlen);
+			Z = malloc(Zlen*2);
 
-			kavasHashZ(group, Z, Zlen, cd, cx, cy, id, ix, iy);
+			Ze = Z;
+			Zs = Z + Zlen;
+
+			
+			//printf("!!!!!!!!!  zlen = %d \n", Zlen);
+
+			kavasHashZ(group, Ze, Zlen, cd, ecx, ecy, eid, ix, iy);
+			kavasHashZ(group, Zs, Zlen, cd, scx, scy, sid, ix, iy);
+
+			myPrintValue("Z", Z, Zlen*2);
+			
 			keySize = curve_cfg[param_set].hmacKeyBitSize/8;
 
 
 
 			dkm = malloc(keySize);
 			memset(dkm, 0, keySize);
-			kavasKDF(kdfMd, Z, Zlen, oi, oiLen, dkm, keySize);
+			kavasKDF(kdfMd, Z, Zlen*2, oi, oiLen, dkm, keySize);
 			
 			myPrintValue("dkm", dkm, keySize);
 			pass = kavasVerifyTag(curve_cfg[param_set].hmacMD, dkm, keySize, macData, macDataLen, CAVSTag, tagLen);
@@ -612,16 +643,16 @@ int ephemerallMain(int argc, char **argv)
 	}
 	rv = 0;
 	parse_error:
-	if (id)
-		BN_free(id);
+	if (eid)
+		BN_free(eid);
 	if (ix)
 		BN_free(ix);
 	if (iy)
 		BN_free(iy);
-	if (cx)
-		BN_free(cx);
-	if (cy)
-		BN_free(cy);
+	if (scx)
+		BN_free(scx);
+	if (scy)
+		BN_free(scy);
 	if (group)
 		EC_GROUP_free(group);
 	if (in && in != stdin)
@@ -643,7 +674,7 @@ int main(int argc, char **argv)
 
 	//test1();
 
-	ephemerallMain(argc, argv);
+	ECCFullUnifiedMain(argc, argv);
 }
 
 

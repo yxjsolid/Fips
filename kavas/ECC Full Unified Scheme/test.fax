@@ -1,0 +1,94 @@
+#  CAVS 17.4
+#  ECC Validity Test for dhFullUnified Key Agreement Role Initiator  - KEY AGREEMENT TESTING WITHOUT KEY CONFIRMATION - Information for "KASTestVectors"
+#  KDF method tested: KDFConcat_
+#  Parameter set(s) supported: EB EC ED EE
+#  CAVSid: CAVSid (in hex: 434156536964)
+#  IUTid: In hex: a1b2c3d4e5
+[EB]
+
+[Curve selected:  P-224]
+[SHA(s) supported (Used in the KDF function):  SHA224 SHA256 SHA384 SHA512]
+[MAC algorithm supported:  HMAC]
+[HMAC SHAs supported:  SHA512]
+[HMACKeySize(in bits):  112]
+[HMAC Tag length(in bits):  112]
+
+[EC]
+
+[Curve selected:  P-256]
+[SHA(s) supported (Used in the KDF function):  SHA256 SHA384 SHA512]
+[MAC algorithm supported:  HMAC]
+[HMAC SHAs supported:  SHA512]
+[HMACKeySize(in bits):  128]
+[HMAC Tag length(in bits):  64]
+
+[ED]
+
+[Curve selected:  P-384]
+[SHA(s) supported (Used in the KDF function):  SHA384 SHA512]
+[MAC algorithm supported:  HMAC]
+[HMAC SHAs supported:  SHA384]
+[HMACKeySize(in bits):  192]
+[HMAC Tag length(in bits):  192]
+
+[EE]
+
+[Curve selected:  P-521]
+[SHA(s) supported (Used in the KDF function): SHA512
+[MAC algorithm supported:  HMAC]
+[HMAC SHAs supported:  SHA512]
+[HMACKeySize(in bits):  256]
+[HMAC Tag length(in bits):  256]
+
+#  Generated on Mon Dec 22 11:36:37 2014
+
+
+
+[EB - SHA224]
+
+
+COUNT = 0
+dsCAVS = ac74324de9af55c64b2029835f1bb1569580c51ba8fb640f0c33b203
+QsCAVSx = a7c19b9f8c5753838fe3f7415c1d5744a041ab4375b85cb74cc3864e
+QsCAVSy = d7939eae7965488b38c5f16e4828bb4f3f8fdd83d850b12050d2d9b6
+deCAVS = 47300e40fca62740fe96ed042aa753cc8e8f7495f8ed2beb484d735a
+QeCAVSx = 2a9f20eb89459ed1fa6bb1e9aacfd3eb5933e65ffa5cbdd52ae3a129
+QeCAVSy = 2bfb5e91f5ed81ba1cdbd0c3e9c1a331169b639b3bcfbba27401b135
+Nonce = 1e3179c94c9aa16b5ccb28c4c769f2ba
+dsIUT = f3714839c9168abc2c03643867c87fbce150e2f6248ca86846546279
+QsIUTx = a404909a2b737e4193766280e8a2776001ad5c06b3477754ac0d50be
+QsIUTy = a4375765f139cdab21ca7f9046c584d3756d91d7bbe654666ba41564
+deIUT = 6840fe644cf754d712a9beacbb45e62bb3cb677f7843a98c0f74485b
+QeIUTx = 2051125eb569763d3e4a7a621de17df2a718fef4c57fefb0ce9e499e
+QeIUTy = feca298eb0ee37b99fa78a5816641a8596e6912cf8a5682ade8b854f
+OI = a1b2c3d4e543415653696494a59703e6fdea3ce536cf1213e561c7f389e812b2aba0cf0c2abdf46ed0abc758289a4e
+CAVSTag = c5a2dce1377883a1d885022a4f68
+Z = 70cdcb8d027f4bf46e8d765253887d84acf5e3fb03e54ba40f4ea4d9e50e6b896cee13035ee9fb08a5134b8e543def084400ead46163a9f6
+MacData = 5374616e646172642054657374204d6573736167651e3179c94c9aa16b5ccb28c4c769f2ba
+DKM = 15582c3af29b8998935215a9fd85
+Result = F (7 - IUT's Static private key d changed-prikey validity)
+
+
+
+COUNT = 7
+dsCAVS = 43516115c1a886e078624bf9e28bc79a22825d2c0ab322713a8f2640
+QsCAVSx = eb5fe72b1399e15b94e0be83ffc2cbced117c74f3d50dca224640c7e
+QsCAVSy = 8c450eaaca0a98220168c2023f29bfab2481766c4dbef4b34ef6728c
+deCAVS = b8b68961f7203254ffc3ef5ccc93a24324fb96d633c68706dd80c637
+QeCAVSx = 3bcfa0f5d42e7fe0be4c91804e735273c2d4c92e5e50b9319546a8d8
+QeCAVSy = e98d5ed06a47c22ecb8a8d06f563674c309e39d6415ec1f57ff53fc9
+Nonce = cf4cddbe4b45e9f5d7491cd9eefc5e49
+dsIUT = 0dfafd42f15d722812e677345ce98cf92d9fb6d95c58a194c3dbe8da
+QsIUTx = c25538651fc284d837fd19e4acbf11c03dad7058f0d0651215214ae4
+QsIUTy = 42b501a01f9da7dae8872bce21c783b4239416476fcf991963c9e065
+deIUT = a1a6d5f8485cec54ab12ad915addbce3f16ee304477ba04333f4e561
+QeIUTx = c21be0ac5dbdcec754bb34bb2a6955a33d945d8dd265d7a3179709d3
+QeIUTy = eee32731ff22e14bdd44bd1492182ad3fe740541859843f8e0fd82dc
+OI = a1b2c3d4e5434156536964866f38831e849ea01cce35b48db223645519f80c2b67d556e5b1d30cf62ba22a35df7138
+CAVSTag = 95d8c0d956c5c57c2946113aa9cd
+Z = 0905319e6aff3622bbc9187542d5f184f836a4be1293d8da4483b23734415d9d1972e6b701d4edefe22c27af01062c4466fbc375e49f0570
+MacData = 5374616e646172642054657374204d657373616765cf4cddbe4b45e9f5d7491cd9eefc5e49
+DKM = 69abf227691747125f1701e37cba
+Result = P (13 - Z value should have leading 0 nibble )
+
+
