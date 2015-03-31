@@ -7,9 +7,6 @@
 #include <openssl/evp.h>
 #include <string.h>
 #include <ctype.h>
-
-
-
 #include "fips_utl.h"
 char *dkmMsg = "Standard Test Message";
 
@@ -99,26 +96,14 @@ void myPrintValue(char *tag, unsigned char *val, int len)
 
 int kavasVerifyTag(const EVP_MD * md, char * key,long keyLen, char * macData, long macDataLen, char * tag, int tagLen)
 {
-
 	char *msg;
 	int len;
 
 	unsigned char out[EVP_MAX_MD_SIZE];
     unsigned int outlen;
 
-#if 0
-	printf("keylen = %d \n", keyLen);
-	printf("ivLen = %d \n", macDataLen);
-	
-	myPrintValue("key", key, keyLen);
-	myPrintValue("macData", macData, macDataLen);
-#endif
-
 	HMAC(md,key,keyLen,macData,macDataLen,out,&outlen);
-
 	myPrintValue("md", out, tagLen);
-
-
 	if (memcmp(out, tag, tagLen))
 	{
 		return 0;
@@ -126,8 +111,6 @@ int kavasVerifyTag(const EVP_MD * md, char * key,long keyLen, char * macData, lo
 
 	return 1;
 }
-
-
 
 void kavasKDF(const EVP_MD * md, char * z, int zLen, char * oi, int oiLen, unsigned char * dkm, int keyLen)
 {
@@ -140,60 +123,34 @@ void kavasKDF(const EVP_MD * md, char * z, int zLen, char * oi, int oiLen, unsig
 	unsigned int cnt_bigendian = 0;
 	int 		cntLen = 4;
 	unsigned int reps =  keyLen/hashLen;
-
 	
 	do
 	{
-		//printf("kavasKDF 1111\n");
-		
 		buff = malloc(cntLen + zLen + oiLen);
 		cnt_bigendian = htonl(cnt);
-		//printf("kavasKDF 2222\n");
 		memcpy(buff, (unsigned char*)&cnt_bigendian, cntLen);
-		//printf("kavasKDF 3333 cntLen + zLen + oiLen = %d  zLen = %d\n", cntLen + zLen + oiLen, zLen);
-		
+
 		memcpy(buff + cntLen, z, zLen);
-		//printf("kavasKDF 4444\n");
 		memcpy(buff + cntLen + zLen, oi, oiLen);
-		//printf("kavasKDF 5555\n");
 		EVP_Digest(buff, cntLen + zLen + oiLen, digest,   NULL, md, NULL);
-		//printf("kavasKDF 6666\n");
 
 		memcpy(dkmPtr, digest, keyLen);
-		//printf("kavasKDF 7777\n");
 		dkmPtr += keyLen;
 		free(buff);
-
-		//printf("kavasKDF 8888\n");
 
 	}while(cnt++ < reps);
 
 }
 
-
-
-
-
-#if 0
-void testKdf()
-{
-
-	kdf(Z, OI, 112);
-	
-
-
-	
-}
-#endif
 static int lookup_curve2(char *cname)
-	{
+{
 	char *p;
 	p = strchr(cname, ']');
 	if (!p)
-		{
+	{
 		fprintf(stderr, "Parse error: missing ]\n");
 		return NID_undef;
-		}
+	}
 	*p = 0;
 
 	if (!strcmp(cname, "B-163"))
@@ -229,10 +186,10 @@ static int lookup_curve2(char *cname)
 
 	fprintf(stderr, "Unknown Curve name %s\n", cname);
 	return NID_undef;
-	}
+}
 
 static int lookup_curve(char *cname)
-	{
+{
 	char *p;
 	p = strchr(cname, ':');
 	if (!p)
@@ -244,7 +201,7 @@ static int lookup_curve(char *cname)
 	while(isspace(*cname))
 		cname++;
 	return lookup_curve2(cname);
-	}
+}
 
 static const EVP_MD *eparse_kdf_md(char *line)
 {
@@ -321,8 +278,6 @@ static int eparse_size(char *line)
 		p++;
 
 	size = atoi(p); /* in bits */
-	//printf("eparse_size = %d \n", size);
-
 	return size;
 }
 
@@ -332,32 +287,13 @@ int kavasHashZ(EC_GROUP *group, unsigned char *Z, int zLen, BIGNUM *x, BIGNUM *y
 	EC_POINT *peerkey = NULL;
 	int ret;
 
-
 	ec = EC_KEY_new();
 	EC_KEY_set_flags(ec, EC_FLAG_COFACTOR_ECDH);
 	EC_KEY_set_group(ec, group);
 	peerkey = make_peer(group, x, y);
 
 
-#if 0
-
-	if (!EC_KEY_set_public_key_affine_coordinates(ec, cx, cy))
-	{
-		//printf("key error \n");
-		return 0;
-	}
-	
-
-	if (!EC_KEY_set_public_key_affine_coordinates(ec, ix, iy))
-	{
-		//printf("key error \n");
-		return 0;
-	}
-#endif
-	
 	EC_KEY_set_private_key(ec, d);
-		
-
 	ECDH_compute_key(Z, zLen, peerkey, ec, 0);
 	myPrintValue("Z", Z, zLen);
 }
@@ -365,30 +301,23 @@ int kavasHashZ(EC_GROUP *group, unsigned char *Z, int zLen, BIGNUM *x, BIGNUM *y
 ECC_VALIDATE_TYPE getEccValidateType(int uStatic, int uEphemeral, int vStatic, int vEphemeral)
 {
 	ECC_VALIDATE_TYPE type = ECC_TYPE_UNKNOWN;
-
-	//printf("uStatic= %d, uEphemeral= %d, vStatic= %d, vEphemeral= %d \n", uStatic, uEphemeral, vStatic, vEphemeral);
-
 	if (uStatic && vStatic)
 	{
 		if (uEphemeral && vEphemeral)
 		{
-			//printf("ECCFullUnified \n");
 			type =  ECCFullUnified;
 		}
 		else if(uEphemeral || vEphemeral)
 		{
-			//printf("ECCOnePassUnified \n");
 			type = ECCOnePassUnified;
 		}
 	}
 	else if(uStatic || vStatic)
 	{
-		//printf("ECCOnePassDH \n");
 		type =  ECCOnePassDH;
 	}
 	else
 	{
-		//printf("ECCEphemeralUnified \n");
 		type =  ECCEphemeralUnified;
 	}
 	
@@ -396,54 +325,41 @@ ECC_VALIDATE_TYPE getEccValidateType(int uStatic, int uEphemeral, int vStatic, i
 }
 
 
-
-
-int ECCOnePassDHUnifiedMain(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	char **args = argv + 1;
 	int argn = argc - 1;
 	FILE *in, *out;
 	char buf[2048], lbuf[2048];
-	unsigned char *rhash = NULL;
-	long rhashlen;
+	char *keyword = NULL, *value = NULL;
 
 	BIGNUM *deu = NULL, *qeux = NULL, *qeuy = NULL;
 	BIGNUM *dsu = NULL, *qsux = NULL, *qsuy = NULL;
-
-	
 	BIGNUM *dev = NULL, *qevx = NULL, *qevy = NULL;
 	BIGNUM *dsv = NULL, *qsvx = NULL, *qsvy = NULL;
 
-
-	
-	const EVP_MD *kdfMd = NULL;
 	EC_GROUP *group = NULL;
-	char *keyword = NULL, *value = NULL;
-	int do_verify = -1, exout = 0;
+	const EVP_MD *kdfMd = NULL;
+	
+	
 	int rv = 1;
-
-
-	int curve_nids[5];
 
 	kasvsCfg curve_cfg[5];
 	int param_set = -1;
-	EC_KEY *ec = NULL;
+	
 
 	unsigned char *Z;
-	int Zlen;
+	int 			Zlen;
 
 	
 	unsigned char *Zs;
 	unsigned char *Ze;
-	unsigned char chash[EVP_MAX_MD_SIZE];
 	
-	int ret;
+	unsigned char 	*oi = NULL;
+	long 			oiLen = 0;
 
-	unsigned char *oi = NULL;
-	long oiLen = 0;
-
-	unsigned char *nonce = NULL;
-	long nonceLen = 0;
+	unsigned char 	*nonce = NULL;
+	long 			nonceLen = 0;
 
 	unsigned char *dkm = NULL;
 
@@ -451,15 +367,15 @@ int ECCOnePassDHUnifiedMain(int argc, char **argv)
 	unsigned char * macData = NULL;
 	int 			macDataLen = 0;
 
-	unsigned char *CAVSTag = NULL;
+	unsigned char 	*CAVSTag = NULL;
 	long				tagLen = 0;
 
 
-	int keySize = 0;
+	int 	keySize = 0;
 
-	int pass = 0;
+	int 	pass = 0;
 
-	int cnt = 0;
+	int 	cnt = 0;
 	char  bufTmp[128];
 
 	int uStatic = 0, uEphemeral = 0;
@@ -498,8 +414,6 @@ int ECCOnePassDHUnifiedMain(int argc, char **argv)
 
 	while (fgets(buf, sizeof(buf), in) != NULL)
 	{
-		//printf("%s\n", buf);
-		
 		fputs(buf, out);
 		if (buf[0] == '[' && buf[1] == 'E')
 		{
@@ -571,7 +485,6 @@ int ECCOnePassDHUnifiedMain(int argc, char **argv)
 
 		if (strlen(buf) > 6 && !strncmp(buf, "[E", 2))
 		{
-
 			memset(bufTmp, 0, 128);
 			memcpy(bufTmp, buf, strlen(buf));
 		
@@ -581,10 +494,8 @@ int ECCOnePassDHUnifiedMain(int argc, char **argv)
 			continue;
 		}
 
-		
 		if (!parse_line(&keyword, &value, lbuf, buf))
 			continue;
-
 
 		if (!strcmp(keyword, "QeCAVSx"))
 		{
@@ -660,11 +571,19 @@ int ECCOnePassDHUnifiedMain(int argc, char **argv)
 		}
 		else if (!strcmp(keyword, "Nonce"))
 		{
-			nonce = hex2bin_m((const char *)value, &nonceLen);
+
 			if (macData)
 			{
 				free(macData);
 			}
+
+			if (nonce)
+			{
+				OPENSSL_free(nonce);
+			}
+
+		
+			nonce = hex2bin_m((const char *)value, &nonceLen);
 
 			macDataLen = strlen(dkmMsg) + nonceLen;
 			macData = malloc(macDataLen);
@@ -675,6 +594,12 @@ int ECCOnePassDHUnifiedMain(int argc, char **argv)
 		{
 			if (!kdfMd)
 				goto parse_error;
+
+			if (oi)
+			{
+				OPENSSL_free(oi);
+			}
+			
 			oi = hex2bin_m((const char *)value, &oiLen);
 
 		}
@@ -682,25 +607,22 @@ int ECCOnePassDHUnifiedMain(int argc, char **argv)
 		{
 			if (!kdfMd)
 				goto parse_error;
+
+			if (CAVSTag)
+			{
+				OPENSSL_free(CAVSTag);
+			}
+			
 			CAVSTag = hex2bin_m(value, &tagLen);
-
-
 			Zlen = (EC_GROUP_get_degree(group) + 7)/8;
-
-			
-
 			eccType = getEccValidateType(uStatic, uEphemeral, vStatic, vEphemeral);
-			//printf("eccType = %d \n", eccType);
-			
 			switch (eccType)
 			{
 				case ECCFullUnified:
 				{
-
 					Z = malloc(Zlen*2);
 					Ze = Z;
 					Zs = Z + Zlen;
-
 					kavasHashZ(group, Ze, Zlen, qevx, qevy, deu);
 					kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
 
@@ -711,22 +633,16 @@ int ECCOnePassDHUnifiedMain(int argc, char **argv)
 					
 				case ECCEphemeralUnified:
 				{
-					//printf("ECCEphemeralUnified \n");
 					Z = malloc(Zlen);
 					kavasHashZ(group, Z, Zlen, qevx, qevy, deu);
-					//printf("ECCEphemeralUnified done\n");
 					break;
 				}
 
 				case ECCOnePassUnified:
 				{
-
-					//printf("ECCOnePassUnified \n");
 					Z = malloc(Zlen*2);
 					Ze = Z;
 					Zs = Z + Zlen;
-
-
 					if (uEphemeral)
 					{
 						kavasHashZ(group, Ze, Zlen, qsvx, qsvy, deu);
@@ -767,30 +683,19 @@ int ECCOnePassDHUnifiedMain(int argc, char **argv)
 					printf("not found validate type!!!\n");
 					break;
 
-
-
 			}
 
 
 			pass = 0;
 
-			//printf("ECCEphemeralUnified 11111111\n");
 			keySize = curve_cfg[param_set].hmacKeyBitSize/8;
-
-			//printf("ECCEphemeralUnified 22222222\n");
-
 			dkm = malloc(keySize);
-			//printf("ECCEphemeralUnified 333333333333\n");
 			memset(dkm, 0, keySize);
-			//printf("ECCEphemeralUnified 444444444444\n");
 			kavasKDF(kdfMd, Z, Zlen, oi, oiLen, dkm, keySize);
-			//printf("ECCEphemeralUnified 55555555555\n");
 			myPrintValue("dkm", dkm, keySize);
 			pass = kavasVerifyTag(curve_cfg[param_set].hmacMD, dkm, keySize, macData, macDataLen, CAVSTag, tagLen);
-			//printf("ECCEphemeralUnified 44444444444444\n");
 			free(Z);
 			free(dkm);
-			
 			
 		}
 		else if (!strcmp(keyword, "Result"))
@@ -816,17 +721,33 @@ int ECCOnePassDHUnifiedMain(int argc, char **argv)
 	rv = 0;
 	parse_error:
 
-#if 0
+#if 1
+	if (deu)
+		BN_free(deu);
 	if (qeux)
-		BN_free(eid);
-	if (six)
-		BN_free(six);
-	if (siy)
-		BN_free(siy);
-	if (scx)
-		BN_free(scx);
-	if (scy)
-		BN_free(scy);
+		BN_free(qeux);
+	if (qeuy)
+		BN_free(qeuy);
+	if (dsu)
+		BN_free(dsu);
+	if (qsux)
+		BN_free(qsux);
+	if (qsuy)
+		BN_free(qsuy);
+
+	if (dev)
+		BN_free(dev);
+	if (qevx)
+		BN_free(qevx);
+	if (qevy)
+		BN_free(qevy);
+	if (dsv)
+		BN_free(dsv);
+	if (qsvx)
+		BN_free(qsvx);
+	if (qsvy)
+		BN_free(qsvy);
+	
 	if (group)
 		EC_GROUP_free(group);
 	if (in && in != stdin)
@@ -836,20 +757,7 @@ int ECCOnePassDHUnifiedMain(int argc, char **argv)
 #endif	
 	if (rv)
 		fprintf(stderr, "Error Parsing request file\n");
-	return rv;
-	}
-
-
-
-
-int main(int argc, char **argv)
-{
-//	testHmac();
-
-
-	//test1();
-
-	ECCOnePassDHUnifiedMain(argc, argv);
+	return rv;	
 }
 
 
