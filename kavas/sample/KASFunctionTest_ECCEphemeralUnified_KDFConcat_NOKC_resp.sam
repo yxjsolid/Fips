@@ -1,0 +1,1323 @@
+#  CAVS 17.4
+#  ECC Function Test for dhEphemeralUnified Key Agreement Role Responder  - KEY AGREEMENT TESTING WITHOUT KEY CONFIRMATION - Information for "SonicWALL_3406"
+#  KDF method tested: KDFConcat_
+#  Parameter set(s) supported: EB EC ED EE
+#  CAVSid: CAVSid (in hex: 434156536964)
+[EB]
+
+[Curve selected:  P-224]
+[SHA(s) supported (Used in the KDF function):  SHA256 SHA384 SHA512]
+[MAC algorithm supported:  HMAC]
+[HMAC SHAs supported:  SHA256]
+[HMACKeySize(in bits):  112]
+[HMAC Tag length(in bits):  112]
+
+[EC]
+
+[Curve selected:  P-256]
+[SHA(s) supported (Used in the KDF function):  SHA256 SHA384 SHA512]
+[MAC algorithm supported:  HMAC]
+[HMAC SHAs supported:  SHA256]
+[HMACKeySize(in bits):  128]
+[HMAC Tag length(in bits):  128]
+
+[ED]
+
+[Curve selected:  P-384]
+[SHA(s) supported (Used in the KDF function):  SHA384 SHA512]
+[MAC algorithm supported:  HMAC]
+[HMAC SHAs supported:  SHA384]
+[HMACKeySize(in bits):  192]
+[HMAC Tag length(in bits):  192]
+
+[EE]
+
+[Curve selected:  P-521]
+[SHA(s) supported (Used in the KDF function): SHA512
+[MAC algorithm supported:  HMAC]
+[HMAC SHAs supported:  SHA512]
+[HMACKeySize(in bits):  256]
+[HMAC Tag length(in bits):  256]
+
+#  Generated on Thu Mar 26 12:50:09 2015
+
+
+
+[EB - SHA256]
+
+
+COUNT = 0
+QeCAVSx = d7a2ed2045d74521498e0a393829ddd49714bc065fc6cf7c473fa2db
+QeCAVSy = bea38549c9b44b86be7fc68811a996bd08f055298b9e090b51b3575b
+Nonce = 5ab9375bccd2e5ad00f384039d7b0c49
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 1
+QeCAVSx = a22b608e3611735230c69e0a08d82b6bb766d943c92a94b9fe4f4e93
+QeCAVSy = 9bdaaa212236a778ece3e934a710482fdf1a071be88a4a3ece881204
+Nonce = a395ce21a16c1a0daa24b2434fa13edb
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 2
+QeCAVSx = 7b7cdee729119825b0f7c772616a4f5f4fc5932210b85d565813093d
+QeCAVSy = fdc1c470c1bfe5a14145aaa9c3f600a338bdc97eb5a826db9bce304c
+Nonce = ba89c934e1be6bc6fa41b5b21f552b74
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 3
+QeCAVSx = dfb1e0b7d0fdabd71e2ed258e571915e44a18982937c8fb3df3dba99
+QeCAVSy = a767d3251175b041b231e4fc0b98b4b7135e42316e4ee37779f84f13
+Nonce = 2e024e863cf07e425fbfaa336a475899
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 4
+QeCAVSx = 89ff055d2ce1ba58ab8464e2046a4a1ac0d2030fc1a8b0b7682c6bea
+QeCAVSy = 18be87743b50428c07d71c08fe63805a656f0a60ddba3eee3386af80
+Nonce = eb56765e7b9a07d0f7eef77eb6997f8d
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 5
+QeCAVSx = 6c905f6ca9b0e008a3e66525ee47ce70f6fb210716fb1ca2c9d542b1
+QeCAVSy = a6b41844169126249e67a0c68dd46a5d5a58b5ae01b852de3247e717
+Nonce = 2db80118ec55ddab01edd1d8980a109e
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 6
+QeCAVSx = 9a4550f179302d9a54fa42b2955d27532ea23bceb239232968a721c8
+QeCAVSy = c65e404a1243230daadd94f7cc87040d4a04935893595a174b441d1f
+Nonce = feeffb6ad615c1b850bbd6a34ec9d472
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 7
+QeCAVSx = 67dfc2ed1f8f80f75199a7dbfb6e7855e7bd4ebb170a537c8369f1da
+QeCAVSy = b08cb1eeb038719ccfa0bd5158d76aac83e7fa2ccee1d627b96f0e3d
+Nonce = 05a7cde5f100aad8bcfbebc42b562284
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 8
+QeCAVSx = 75ef46e5518243b968ca1f58e216a6a4433834af7a18ad0b50ae911a
+QeCAVSy = c6a330e27842dee9207f3984634de8166ef87ab3da19c6da80cfcc64
+Nonce = 3007ef1b5ef01c20ecafe8e46729f19f
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 9
+QeCAVSx = d342a8cf051f6bccc405cad12e8c646aca2c42e32b7286cfee3e98c7
+QeCAVSy = 5e3705c3ed0f715fb4f8947e72cd00427fb956ed43995ac4be8200f6
+Nonce = ab96f3ef6e8e87fb33c1aaa34b8b54cf
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+[EB - SHA384]
+
+
+COUNT = 0
+QeCAVSx = 06bfef354035a56b1bb56c45fd81e23ce0dd08c21833e7fdfcd8011d
+QeCAVSy = 8fc5e94051c122a26680aa200039dbbd393ac86c328e745a82ab2759
+Nonce = 2dc67c4ac0ac3137159bd62ebe2fac39
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 1
+QeCAVSx = bc7e2fb9f6a00355db1affb339bbd51d8c00a4dc12426b750bd4b9a6
+QeCAVSy = a6914daca6b4510512d450e8c983167c118f2ef63d9b30d476cdff0b
+Nonce = 151732e95b3643b061568e0ec4f0b8eb
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 2
+QeCAVSx = d44fac7d232dcc26b2acd5061bb4380483b4b54dc7d1fe7d934af04a
+QeCAVSy = b13b8fe427bd6400a0a875d40f86bae4469b58b8d5d92deaca4a6c81
+Nonce = e6115b0b7e0c5c705a96a8131b9a07f0
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 3
+QeCAVSx = 75cff0a1f02938517a24eef64befc1598f84d1e02af394f5a902387f
+QeCAVSy = b7fe843ac8e9ca9482e7fde06479c597919ddc2be14b7e48609556dd
+Nonce = 1b2fa59f4b6ad89ec6d54784c021ee28
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 4
+QeCAVSx = 198fe7f3f25b2e75eef2d04acb6ba2837c2bca900fd5ca3e45d88f7d
+QeCAVSy = 3f766dc93732eebb87fbc32253b85c3eb383bdca48c7bf6d2acc5c20
+Nonce = 8f6a5fa167a1c1a719856704541c0a1c
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 5
+QeCAVSx = 7fbb0ad19b997b838f1681f084ebd845705ebeef91187a5c20ed8cba
+QeCAVSy = 59f2f1e2cb7f1eacb0da0b542005165fead86c9ea3c40f8aa6f965b1
+Nonce = 729dbd287517047275b781203d2df877
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 6
+QeCAVSx = 8dffe9756360c97b40c5e32e0068e36202e0ec830447063e6f5ba879
+QeCAVSy = 824266d98c8be0128756d9262477f08ff9853142613ac0c0a70648af
+Nonce = 16510b0a391771f369046cf7bd28e332
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 7
+QeCAVSx = 6cbc55028dd29829d239119a98ee2e8a191bc1833b167a49adb52fdc
+QeCAVSy = 65ed7dabd40c2e47352f2d1790eecccb8830a2661a91d49322ec9efa
+Nonce = 276b57d63f41b65820b0772b9f844620
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 8
+QeCAVSx = 25a0fccb365a1ad7ea1c2ae9cc932192d307195ce5c9cd4558638f50
+QeCAVSy = dba5bd67e84690853e4d2d8f2771bbe87f1af3ae68b06300ce1253d6
+Nonce = d878409a6a96aa57878068eba1f21614
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 9
+QeCAVSx = 29ab96985302d2f3b1e78f67895699aa851646f14f7421192016da38
+QeCAVSy = dc156da7b4d820eaad217713aa27ed063761cd8247c5e2fb0a06e9fd
+Nonce = 9d660e828c275c1e68c438b85129e655
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+[EB - SHA512]
+
+
+COUNT = 0
+QeCAVSx = b2f5ad87d3e45bb6a76dd0332bb535a5e7caf6adb251c6225d2c74c0
+QeCAVSy = d950424ff73117f1a517559a8949a907cd8245050204ea62cab7baf1
+Nonce = ecfd6af2ddc777ce875473319c9b4be2
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 1
+QeCAVSx = 4058811ffa13e5ac8f2279dc3ef04919210accbae3799749dc023f37
+QeCAVSy = 062fdf57b6cde699e96f12152fbeb9c27da19e8a54fe4941370775c8
+Nonce = d8b8050347f4f291d9c3340709c9a85d
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 2
+QeCAVSx = e73bf1f4c7b8607428be48d0a86b7e193bab8746b28f2ac3c485648e
+QeCAVSy = 6d802a541f65306566c9e135c9ecb024f081161bf2dcab3c4a6ec95c
+Nonce = 4feaa0975c4648ad2ecff126abe25660
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 3
+QeCAVSx = f581cd377511e2e6e8dddfbd26dd70e6f473166db07c9f792fa53494
+QeCAVSy = f4526ab2b4969493ee610f5839d2501c2c0c1222143c9a981b5ce67a
+Nonce = 4604bdeac8aa83ad7eca9d32b8027e2e
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 4
+QeCAVSx = 5421e51b37185c5d624afa52e0d553f7fd2d6a808d27341322cb91ff
+QeCAVSy = 46cf50a95c9e35af41a9318530e7395fb80399bbf046eae7e3af2b7f
+Nonce = afaac4048767fd4d17ba3b29fed5bb75
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 5
+QeCAVSx = 212dccabc168438be309a9d79b6e254041d69b9002ce3ce4b9349f05
+QeCAVSy = 8ccd09f230583789f57fefb78dce411ff9f87d44f5d48974c80bf853
+Nonce = 6a2a909e252a3cd21bcefec3e6dada72
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 6
+QeCAVSx = 8d4710907adf7e66750efe0905980c9d382325dccc64591154827b8e
+QeCAVSy = 8a7246f22a345677f6cdc70a810f5814d6ff4ba8420a95bba1ed0735
+Nonce = 67ab5758f62d86f0ffe335b38904cd32
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 7
+QeCAVSx = 84c99212fc4774c310a362ba004ac84ba049837246bd8bd388645624
+QeCAVSy = d71925e8d9f93d3324d658d77b2d59aa6418c0f7a9b686322feca159
+Nonce = 09b017024df74a8c89fb5a49c13f0909
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 8
+QeCAVSx = 7be41bd562683dda98aa2ee55b618e711767fe928e25a474d63c174b
+QeCAVSy = 000a8c4c683ba9ebd23e2a345d56a130ee43ec1c07d99d0cb5844f65
+Nonce = 1c4c95236b28e1dca9713b6b644dc4bf
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 9
+QeCAVSx = 423174ef23a245a13a908e338e9c3a380b8dcddb67fedc70d1989538
+QeCAVSy = 7e8427557784de5317154f43bb0c6a67ca41dc74a2ce27ba94d7051a
+Nonce = ca38edc19f64ac00ac1f0f5478a8ef85
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+[EC - SHA256]
+
+
+COUNT = 0
+QeCAVSx = 2146561ce0b42d72d74f78806cdefec55ca08cedc63e0e5ddbc312eedbc2865c
+QeCAVSy = 95b9de4a93522f0f17eb71f52311fcbf27aea539fae4bf15e517989590f3338d
+Nonce = fcffb4899d5e0f4b1ec36dd1ee6d5b83
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 1
+QeCAVSx = 0789981fa7097f5cb738f7ec9f7299052b5cd593be460d2259449aec50660ce2
+QeCAVSy = abb879aa7eb3160d4b448dd3c1de8319f5a8ed396c7eff351d438fcccc6119b7
+Nonce = 7b7526a2345c75e6100ed2bd09e8330e
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 2
+QeCAVSx = f549cbb08964bd06fd1a475e6a20c02a582176b4df4a59a1fb834a9b494fb968
+QeCAVSy = 932ae34b2080695d76a5b4406d4551020a20cb408c6374542f98df227e2c8c7e
+Nonce = 03c114e7b375f29fda52a3f5dd7ec4e6
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 3
+QeCAVSx = 40433d49e4487e0e5652bea33cf35637bbdeaf30a9c306de560a5d2719c23965
+QeCAVSy = 0ad63c9e7412d151cd90bfa50b3e730a76d89c86f471aacc240c8def7c407d76
+Nonce = 972accc66743260dd95fbbd2396a5605
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 4
+QeCAVSx = 0b775481db14142aa3cf3b765eb63eada67086c859fdd2790c5987f3e2dab336
+QeCAVSy = 65bb991345dfc586893abc48344845e732c8a9266e745ea15b3822e1e1c33d26
+Nonce = cd597ee6967dd4db11412b2a66bb93b3
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 5
+QeCAVSx = e9b35aa6d340cd3a395ee516ed434f22dadf43ef6d6ac55d4fb50315b1373aa2
+QeCAVSy = ed4a03ecd098bdf9bd523a31e89ed31d0421eed10ba5754959accb2b05f37395
+Nonce = 2b9383abf6be9bd95337c7cf3c59046d
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 6
+QeCAVSx = 47dcf626c0bb77254c6382eb7195ca0fcd63253b8c36dc2b3e8da9edbbff2977
+QeCAVSy = 4cee112b3dae4ecfad80a05953e8aa7095ed2dcd9bcfae38d140bb39439a026b
+Nonce = fc9d2013b1a1e58d28cfe726c50655de
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 7
+QeCAVSx = eb3fa7a572653b4d862299de2483123af6105ed90201b1f9f063e8e87a2735e3
+QeCAVSy = e0741675e05fcb0a4d22cbfbc9b46c8bb1e80f90e49afb3e0e665263711d008c
+Nonce = bdf799f4898c3068c554a1fb9b63fe86
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 8
+QeCAVSx = ae2bf575f25561612d8f9b7c9dc6a4a51a78d644a9915bf1068bdeabe64fd24d
+QeCAVSy = 696786c213293b1ea8e925d44e7b7bcd01ae3874572dde188f2da3437a48ba02
+Nonce = 16f070b5c56ba75c2e50d287eba479ef
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 9
+QeCAVSx = e35ae7c81f8851d82c0a9867e07601895990310b665e51b84ce638e6c235390a
+QeCAVSy = c0f84ef8350dbd3a8139df88a0e362da5e740232275773b6ef7264543891c2af
+Nonce = 62ceb7e35beb7f6c5d524661dded5d9d
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+[EC - SHA384]
+
+
+COUNT = 0
+QeCAVSx = c39f024170368135ed05239cf11fadb8ffa13d292a1383e4efb7140d143a8936
+QeCAVSy = d0191d14c02a229bb1add4b9071ab22e6c416e2dd651b150d5738e887686d6f2
+Nonce = 969633f2a2ba243f9886fe3d3df3e158
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 1
+QeCAVSx = f3f4cbc75fb12a5e873956af33cf4bf4c1a93ef9689f65544bbbf51dca4efe68
+QeCAVSy = d473394a457e54c734a482dec6849ffce6260a40ede19ded196aa92f18cbbfdb
+Nonce = a5d742f23eb005f78137c5f9f79b8341
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 2
+QeCAVSx = 0e418cc3d6a1314061f0c7e00d09fe46fc2f6e57dcbf864d64a92ed7194b5ec8
+QeCAVSy = 651769fca9d40260e0ac2cebdfaad42649956df6ffdfd4314002773562d5fbf2
+Nonce = 55050d611030bb045af8ab97b3f2f26d
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 3
+QeCAVSx = 80f7657f5eb6daeed4d2bbaba327004008217c9ba0a70d091281c028da1c3d55
+QeCAVSy = fad7304f42f6b69b91affd2bf7a41b1dd3a27b4b207aef7559d0f1f7b91a1cce
+Nonce = c40f0cab79c0c6562ad35a70989435c4
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 4
+QeCAVSx = a870b7977cc8c41085bc20249e1a34ea9658665da5c77720d2b555c1690a5dcf
+QeCAVSy = ddacd15a8375b892f0f7f4c1a54213042990372b7a461ec6a8993472ec32b3d3
+Nonce = bc4fa560275fc16a35ee2648b5613231
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 5
+QeCAVSx = fe625803cc8babade84d50a80db7b309751c9cb319da73e74ed607237a5598f5
+QeCAVSy = 97ad4b92c22d04a6d1b24165915a28b02450da945bac282cc8bba71aad77357c
+Nonce = 075d3cab28846e61600f6bcc377d8b75
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 6
+QeCAVSx = 659ed01ba4d005a02b3ab4da80cf6408b160c47e77c1305ea6b8031fa4dc434d
+QeCAVSy = 912fc117e1ca3c59544beac49ffb45830934f742301f7d3c2a32fb6c30af9bdb
+Nonce = e885122ec2bc59d1b0b279aab627c11e
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 7
+QeCAVSx = d9c7b97236841ea3f247b8881cd5df29d50bf00c2058b3d6f0073e0c5b5bd145
+QeCAVSy = bd57aca3f2fe8c566d65586c52aa63df235842f28975d92627ccb8dbc53121c5
+Nonce = ffe81be8c22228d30a71061ad76751f6
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 8
+QeCAVSx = 84064c0b6aeaf7498cc96882d0b050180a192c70d5a00d0c4ab7f47d3d5a14d8
+QeCAVSy = 1a7febdcb0e2f7564b1c70936b6359f7e64e08ae309d940790e77bd8ee3425e2
+Nonce = ca2b6caf431eb79b53b1f738a966ee4b
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 9
+QeCAVSx = 0ba963553786bd97d7b9332031257ff84579a633c1013233ce96620c713d85cb
+QeCAVSy = c52440b7d54d24d4533366adc731951344c873a4f9383b3ba8f61b4fb452b912
+Nonce = 673e3505eaf2a55c326b8324f41dc885
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+[EC - SHA512]
+
+
+COUNT = 0
+QeCAVSx = 7bc0394d28b09dcff9f08e3af4365a4d44d06dd4c770d702e582516071e7c2f7
+QeCAVSy = 040c00ff68c06bf59b3e90c2d4b950cb744850b5abda22b74b3eca92e30df31d
+Nonce = c2d727bdd7a6d5a2a40f69be011d0bae
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 1
+QeCAVSx = 6e61750feb7b34f58b0719a09fd116631f5f6668f4eac0fc963d0ec5ef1f9a20
+QeCAVSy = c1519dc2c0b09462958ff510c16009784eb24f53775a78b7854e5cededbc8b4f
+Nonce = fc8daccd1a94b49a4c76e2d393035473
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 2
+QeCAVSx = ccd5fd81bbebd825cb86d40e4412a74924cfb3bd59345f2543d106d44b166dd2
+QeCAVSy = 04b19a40bb3432a021cb7aa1155e51a441956270a7f12ca780632d39ee1e05ba
+Nonce = be355e644098ba0291626336a93cab18
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 3
+QeCAVSx = 89cdc0814c7901ad5739c6fdddf8d16042c41ff4a0cd4cf837d6aa6d79ac6b7d
+QeCAVSy = 8a26261b6986e8794aa3768827574fd78b59f89542d9cf80bf1a0633805ed52f
+Nonce = 439006c2aa4d44eeafe2d67c7773a8b8
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 4
+QeCAVSx = bd54e3191b139fc046421ca6e5fb9d9ee8c2eb8d3ebef1a73f88038afc574a1a
+QeCAVSy = 40e1ea1a365d98485bebdd68fa481509a3575114c9d02b78245736c0c92092e7
+Nonce = 5900d566353425f454bf0de3d496be70
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 5
+QeCAVSx = b94f2a8f6c030bc4c9385f6610f07c40cb6e4125e7ea86fd4bb561e10bd1e6aa
+QeCAVSy = 3c898227c3a9ed5df21d7381180e98c65e9f5b58267bd06d489d98624b092aeb
+Nonce = b6e40da60fe8149765aac2f365b3caad
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 6
+QeCAVSx = b995b1ca7699f18a5c9c7a789e228d63f4aa135ae91e9d36a65e8376a244a9f8
+QeCAVSy = 2d4a7e57ed25e285c5db241ea0199cb22597ab013a28cd102fee0c988d27b5ef
+Nonce = c5b70039013ff5f4406ee104d894e6d1
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 7
+QeCAVSx = 4a0f64c9fe593626158c4444323f3cdfab267b4e01ee95ede91e6dcd2bea8488
+QeCAVSy = c8c56875a645fad816078b6c69712d486c7e89ef3c86e9542932afeef97adcf4
+Nonce = edb3d9b2399dfaf8b19efd1a02bf998a
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 8
+QeCAVSx = 138237d8275c9db8b9866649c87a5b617fae13b435a5a1cbeba471e7e1cd4603
+QeCAVSy = 08629635530b750dd02e5ec22bb051851cc8b7e459f824ddbf390fe96dd7ca27
+Nonce = 1a49e7c185f0808d9f6ceaf0ca2b2cea
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 9
+QeCAVSx = f9f2a2ed657a7d4499e2f975dbafefefdfc4622e455643277a1425f68f04e8a8
+QeCAVSy = 769c2851235e66b8ae749eac061e890edc3e0c8f2293296047e965856bce7c18
+Nonce = 764372cfe5507a694cc36afba9afd957
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+[ED - SHA384]
+
+
+COUNT = 0
+QeCAVSx = f6bbc17de23badbd1ab5273cca6228e3d7ce193d0d95b7c95b0c45ba1f1fd72622fb9b9e1ed8609544e5d8a0c88d2fa8
+QeCAVSy = f0517bc6375365d7acfb0a831d52dad04b838989ec9b6a5c90b2462565a10ee488ee9a829c580bd28d9bdf24efbb733b
+Nonce = d4dd13f093eb4c5d4238962ff8d3cf9d
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 1
+QeCAVSx = c98f9b2acae370476115b44f7d76790ccf2a8ba7fdf710200a934412612b6063b039a8307c582a1227966b179eb638bc
+QeCAVSy = 1e4d2e4dc6873dcd9ac7aa810101239658a52d22f074200299660d42b5bc1b4199cb01e43321f3ef98e50d977f0eb12a
+Nonce = 09db81b2675f65f6067b5d67e58d60f3
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 2
+QeCAVSx = d2362929ee0d974e3e2e46168b564db79507bacd9101da0e5d9acf62c081f747055d55c5c935ddd73be46216c6d6be9e
+QeCAVSy = ecaf91807d226cd733a37a250df7235c287636ae51e848455108b8c2cb89cac2585cbd97339dff0289581a718c4aab3d
+Nonce = 23d60ab4573731a39b7c6b1814c99e6e
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 3
+QeCAVSx = ec693405f5ddf84d8ccd267c5ee154e54c1432a7f639964839ffa012ea9ebbcb1f74acc5dc84b32e11d2ef493a243ed0
+QeCAVSy = a4b771ab2e56782d090d3a4a5470ab738769786ffd8e5235a111d64ac926de5a36567d1c725f214fb307e1851f799eb9
+Nonce = 3a5702ec9cadc7845f0df64f3232e895
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 4
+QeCAVSx = 9a8779f971a6241bbce982dac25031d4a190d86a86f44b9aba85945b142253deba082a39ea4f0ba8e3233e3e0285eb0f
+QeCAVSy = 5899a5ab6108cd7725d07d3e2f1d57df1baa8108833e19e2f78299421bf5b2de745c2417907b939a18aee25e23eeee5f
+Nonce = 0451ff606b72d37d8bf0052fe5d5bd07
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 5
+QeCAVSx = 0d93feebd80e09a0c607d128383f720d0cce490d3457ae557931c57483c66793cdd6b309d6de80a58d12afcd81bcf1ce
+QeCAVSy = b07fbf98c4c49f4900fc6313accc68424997907ac5a02926ff9da2503f87bc5adf1a3c54125d6e47ab0c863fff7f8ee4
+Nonce = 5e80c8d435f5be387efb4517c2ca450b
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 6
+QeCAVSx = e3915afbe261d83533d9cb7b88250c5d1b3a210de436bc729709083fc6ff4cdce74a1ce3abfebe70b896848489c37a5f
+QeCAVSy = 3a0fef312e386da44de140926adb2360f3a9cf0cc4c5dc3313e2288a7ae11b6f044e543d2ded4ced306b70af7fd01820
+Nonce = cb03b05b3642bc21666b4f767a3814ed
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 7
+QeCAVSx = 5bd9d928017fcd001059913acd9beba4fe8400412be9e36cd3595dd20059710ab8b45b00ee0a010268b52de92345e95b
+QeCAVSy = 18a6c48f1cf193e413cbea3667c3ecc6b990864da864ecca60d7a6c18418100a7eae9b227b3d91c4fa802201000fe6f4
+Nonce = 76e4cbaead6cec6194fabdc13aec7145
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 8
+QeCAVSx = 9399cd7c0550f53aba6161d2bf211db88f8cc8ba88a7a2dbda8e6ec9582471d4245b29eb5b7168393e18c2426f47ae83
+QeCAVSy = f1700204608b5e4fd2f98fcb75c936c45554b169422bf3fed4ed71dcc64b36de878e32a87d042471b42eb694ee16759f
+Nonce = 36404483cffcb57d3de98d58c545e35c
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 9
+QeCAVSx = 06baee8ece8ef780f8d32118566bff0e1e59707c6e328e935b0e6f731cf8b190d21b8b2e8cd22e825574c9993b39b9f6
+QeCAVSy = 3f2ba24e952c42f2bc23f9b44a2cb5d5ff8a4377cdb3c44eb9fa610048c589482fb2ffe126f8e69a063ee835bf5d5c3f
+Nonce = 312e6c8379da1d93209afdce1dd8e187
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+[ED - SHA512]
+
+
+COUNT = 0
+QeCAVSx = 3f77988439dc8b02f0450a6b20e5aedf726c3d02c057cf9c62d38348baf0cad03812e7913d820992e8fb009713658a4c
+QeCAVSy = 6c4d7d914a74633909f5032821ec2b8ca981fd5ebf180ff509b27c027805e1276e90c1fdb63cc3a7750c177953788400
+Nonce = 578f12782c4c6423808d28839cca0474
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 1
+QeCAVSx = eb2b8e35980dde9509e57398ca2e36cd0a50ce4f04c152c4fd2938308da1f5fc137da9cccbc46ff57060d4778d594ce7
+QeCAVSy = 262816e36ed0b0d63f97b68f7fe2733f93c4b3b48284f99196afc00b0572800683dbfd6431a4f04d23494807acd2450b
+Nonce = f824c275e95568168638cff9dd7783c3
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 2
+QeCAVSx = d4c02d864c5c7bc627718a114289193cae8ac81ca6d180b8a2b703a27c79bc9ca2f75e84b80d17b9b09a63f76ec18e27
+QeCAVSy = b0d2d540bb43d13450a9680b9180b75a62878bc7ecc38eeab4e41540e18cf8a006453c73f19fec34c7d97fb4fb5490dc
+Nonce = ca287f5b90451be516871ec7efc351b8
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 3
+QeCAVSx = ef16c7eeb84d475ec09f755724b842f00e9c47686b53f159444ad538b8ab2d35fa4b56254c9a8fc3199cc57a6a7c0a10
+QeCAVSy = 8841c0e0e9facabc01c5df18e7d721ceb03d4aa561bc5cb1050b22d43361e34ad41e1d88b321ac4d1b7fddd2c458c83f
+Nonce = 7c8c359e667aa4df349600fc90b069e1
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 4
+QeCAVSx = bd09217f87f59a017cdcd2b8c4704c60c288a96694645d835143b9349f9344a9c3632a1d1776b9510c9c0c8bac652983
+QeCAVSy = 51f3433cb92b2c2d6b622853423dd66cbdcf2a324dc461f0a1eec4a41ab0690157232f6aeafbcd2365998bb8ea397fe6
+Nonce = e1e19b6d6ac89d8218352e871e22af6b
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 5
+QeCAVSx = 5f802fb8a75940af6039b9f6db19fa80e68b40469d6584247923f842381903c67f299d9f410ac8a8d4a2b79a4e2bd61d
+QeCAVSy = c7432981d2197641fdd8244d6db4f6a41c4a12e9b79da5ce5787edbe917b84093d5c0211e5fc71cbc6b861e96e433448
+Nonce = df1bbe41242748dede88bdf28817a8ae
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 6
+QeCAVSx = bea8863278b5ace785766d17cf04980bbcb05717f438cd5de19684b975af45a673da489eb51d6420d5a9065da5911c36
+QeCAVSy = b46faaba2c099f9b8408b2aae2b2cb8a6fc6dade1f0030bf307d5ea4302db3ebe07c34c080d00c9c6a7a78a22d0e57ab
+Nonce = 46e1eddfb94ba12bda19e3a3f7730ad2
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 7
+QeCAVSx = 5e9ce19b2e324396c287a672954e804d291e7b9f05e98b7ea40537416a54eadf7c735e137008474118a6f06ddd30a3d2
+QeCAVSy = e439970f4bf2f17fc380dc389d993cada7d15d33ce65879952512b6abb562e9556c27c685b8a16c6c13a00f596da4428
+Nonce = 0c3dca74759e139b3fca33909d37989c
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 8
+QeCAVSx = c3511e25ae5b79421f1b40c3377bafd9ea2fbe6bbe0615fbd276551366c889030c05b262cba314f3a39b895e53a3c3de
+QeCAVSy = 35e66e49d391f2754db908c8904b6d296eeb992b455c2e192def3f06db58b30976a003843c3ddee853e229adb1a6143e
+Nonce = 420aeeff41093885c6783202493e3344
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 9
+QeCAVSx = 303493e49fcf4c9d1603dc88cf230da644b908ceb9d7199d6dd760b51aa0f0ebf7f94fb88bf1d67b7a8dfc1039a9b0a8
+QeCAVSy = 986efab56e1b34d038b9472a81d4c1fceeb99f5ca869b45298f703a65b9bd07b49ac4b856c37652fb51e3131106d40ed
+Nonce = d0e6373947123dc30cd01836ebd086e5
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+[EE - SHA512]
+
+
+COUNT = 0
+QeCAVSx = 00000031b8dc79dabf20ade27563568f7c0285663ac9e93c7d5d906c7474da6d8f5573b264353e21c43e24ccae58e283596f9a4fd9223301eed815dfb1da6938dc50f995
+QeCAVSy = 000001fe3cf5ee9e236aee3157b44d9a1e142edf46a9f44c28a771dd28fe696dd5e9426aff06004399de6256a574126fed634564d7eaa6d783443e5128a9d84b4b49f872
+Nonce = c8f38da228f466c012ad1a4cbb0d28d4
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 1
+QeCAVSx = 0000008ebeb1a81c819518d5249f5c02c7fd81f1f95102017eee1286e13ac90a5589d7c1061542e5ab7a1ff2a56c2a8b39b940799c320317b1971f05d409227bbaa0b37b
+QeCAVSy = 0000011ea4717a8c33272a70e0847218707dfe90b267a93d451d187d7de972f37c3e9b738b91adb94d9544a10a74ecfdf6ea39f1e4f08f257bdefa190ff584e60879af30
+Nonce = b1e39d2b40f56df099330f319e0f0205
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 2
+QeCAVSx = 0000012d17789cdcfc30024c96ebb3a4a560a82cb68e689d530c1dc116632a6a1782dc27624eba22c7e89f4eef3c2108231e04dd54e72d15534ac41be6a2b9796d350c3c
+QeCAVSy = 0000003bad04fb4ac873955431ed19ea3b5f093191cc17e2b27b7b8833a4391961c44a85fe4d4b501018964623faaeb0ecfb435a00707f0dbac81b66565d103436e94d58
+Nonce = 7c0cb2ab35acb443d4d17b896920aaed
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 3
+QeCAVSx = 00000176168113fc8179e84d4e28e8cb4b679b3e676f20505217d9b5f5a6e5261a19020dabfd2645f55b20554f1db6359fd64f56037c3398326711e2481b61ad3546eaf6
+QeCAVSy = 000001f0e0be8cafa70531e92d49dc3d5fae571236877a863750da4e5810be69185ddb2a2d7c029389037270a300885261cbbcbb0d66acc37b10ade4e3e7c28d336fa53f
+Nonce = dc5cc197f3788b20e9251ce56a6d246c
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 4
+QeCAVSx = 0000015b05b6fe11e292393fd8157c3dc9f2897b5a779aa2ff75c0a325f94c31423491dc2d5d9cfa948857739dc0f02f4f764b0b0527fdae06f1343acdf8b0c5c9abefd7
+QeCAVSy = 00000112db7346d4635f0c9c52afa2cc26ebd737465c0188a5e78a1000c0c14a7e6f87740ec688335f3dea76df0fe181989d23a8257497b30984ffa56b9a56c60bf5b68d
+Nonce = fea3b5e9c3c442ba2b3ffc4c72ae26a7
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 5
+QeCAVSx = 0000009847f1e4364507447b6accb5ffc20d412679208c5b52d89cd9248849c42422e5f99d25770430bcd4652dd24b58584b541d2577672112130abdce12f7835c8fb8d1
+QeCAVSy = 000001ae9f9ee5cdfdae5aff0f630fe3bd0be04b5319ba2443dcf83151399aae890ad8d94aa9614585ae5729b2bb80ac6396ad13a6193e38dcb20877fda505ab005b3f61
+Nonce = 096e5f5f5a2483633a03acd850a55b46
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 6
+QeCAVSx = 000001fa8d778a016fca6f815b4f34e5989ca4ee847bc2a6ff67f251fa3a0e3569edfd4e917c3be610adb74700c5371de1d0a98ae438385aa50adfff258803c07c4d6aca
+QeCAVSy = 0000000edcab61789ff18c4fc29a8e1878c7ed00234c3940e4d7a2df54df8e6842f57f3f8541dd43bdea844c43559bbf68b60e3c693047cb1694925f3bad12763789636c
+Nonce = c9afdbea736ac22ffc0b6ade3f951440
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 7
+QeCAVSx = 0000008c072cda74165c2536d68fab222478dea6086c8d7a826caf609aa29ef0546cd3e8f49c9af2078e2846a5b701255f64b1a5c07470b7cc4476c205aca7886bafd5b1
+QeCAVSy = 0000002e1721913bb75f4471a3c79a456296102850920eee9a8a6cad749798d07909bbdb87461e4bb00162deac42a884e9b46282bae4e79fc94a9a1110dcd6203d276fcd
+Nonce = dbf19f3832e227ce291780188881e82e
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 8
+QeCAVSx = 000001dfacb5dab76daf85eebdb76304fcfc9e7d5188b43e0a43fce50138b7aea7b1f1eebb45e1f42f7a863bb06fe4f4d8bc2d66b87fe884143f2daed9ab3244661cd183
+QeCAVSy = 0000009d271aeb44b147c86f0c9c9fa2531bc96b1e5e0ee1c59845f1e7fe3ad7d7d5fff8e711d1528f10eeb14172a7d39d8ed489d7638a40de0ccd5ddd0f3ed87a302a2f
+Nonce = 1c0148bcf63b81a5c66a57303912970d
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
+
+COUNT = 9
+QeCAVSx = 000000ea25fa1625c5abc0af9814771d54d99b7730a88fff67dab5899517339546d75a45ed4fa63871b052819e07369ce66e7b07fdef5f5e4006c49c4268e83900ac04af
+QeCAVSy = 00000104cbaa4c2803a4f8e8fa64eef748d0b3fbdffcd281b310aa4429077a798439755357c08cbb94cbea5472f2c041f217fa8c2b8026c763f4d4df8e10ea84f64a7c4b
+Nonce = 3b25b8ba6e5314349b4323a997820e2f
+QeIUTx = ?
+QeIUTy = ?
+OILen = ?
+OI = ?
+IUTidLen = ?
+IUTid = ?
+DKM = ?
+Tag = ?
+Message = ?
