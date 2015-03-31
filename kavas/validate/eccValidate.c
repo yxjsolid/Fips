@@ -96,15 +96,15 @@ void myPrintValue(char *tag, unsigned char *val, int len)
 
 int kavasVerifyTag(const EVP_MD * md, char * key,long keyLen, char * macData, long macDataLen, char * tag, int tagLen)
 {
-	char *msg;
-	int len;
+	
 
-	unsigned char out[EVP_MAX_MD_SIZE];
-    unsigned int outlen;
 
-	HMAC(md,key,keyLen,macData,macDataLen,out,&outlen);
-	myPrintValue("md", out, tagLen);
-	if (memcmp(out, tag, tagLen))
+	unsigned char tagOut[EVP_MAX_MD_SIZE];
+    unsigned int tagOutLen;
+
+	HMAC(md,key,keyLen,macData,macDataLen,tagOut,&tagOutLen);
+	myPrintValue("md", tagOut, tagLen);
+	if (memcmp(tagOut, tag, tagLen))
 	{
 		return 0;
 	}
@@ -381,6 +381,9 @@ int main(int argc, char **argv)
 	int uStatic = 0, uEphemeral = 0;
 	int vStatic = 0, vEphemeral = 0;
 	ECC_VALIDATE_TYPE eccType = 0;
+	
+	unsigned char tagOut[EVP_MAX_MD_SIZE];
+    unsigned int tagOutLen;
 
 	memset((unsigned char*)&(curve_cfg), 0, sizeof (curve_cfg));
 	
@@ -693,7 +696,21 @@ int main(int argc, char **argv)
 			memset(dkm, 0, keySize);
 			kavasKDF(kdfMd, Z, Zlen, oi, oiLen, dkm, keySize);
 			myPrintValue("dkm", dkm, keySize);
-			pass = kavasVerifyTag(curve_cfg[param_set].hmacMD, dkm, keySize, macData, macDataLen, CAVSTag, tagLen);
+			
+			HMAC(curve_cfg[param_set].hmacMD, dkm, keySize, macData, macDataLen, tagOut, &tagOutLen);
+			myPrintValue("md", tagOut, tagLen);
+			OutputValue("IUTTag", tagOut, tagLen, out, 0);
+			if (memcmp(tagOut, CAVSTag, tagLen))
+			{
+				pass = 0;
+				fputs("Result = F\n", out);
+			}
+			else
+			{
+				pass = 1;
+				fputs("Result = P\n", out);
+			}
+			
 			free(Z);
 			free(dkm);
 			
