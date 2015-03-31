@@ -15,6 +15,7 @@ char *dkmMsg = "Standard Test Message";
 
 typedef enum
 {
+	ECC_TYPE_UNKNOWN,
 	ECCFullUnified,
 	ECCEphemeralUnified,
 	ECCOnePassUnified,
@@ -363,29 +364,35 @@ int kavasHashZ(EC_GROUP *group, unsigned char *Z, int zLen, BIGNUM *x, BIGNUM *y
 
 ECC_VALIDATE_TYPE getEccValidateType(int uStatic, int uEphemeral, int vStatic, int vEphemeral)
 {
+	ECC_VALIDATE_TYPE type = ECC_TYPE_UNKNOWN;
+
+	//printf("uStatic= %d, uEphemeral= %d, vStatic= %d, vEphemeral= %d \n", uStatic, uEphemeral, vStatic, vEphemeral);
+
 	if (uStatic && vStatic)
 	{
 		if (uEphemeral && vEphemeral)
 		{
-			return ECCFullUnified;
+			//printf("ECCFullUnified \n");
+			type =  ECCFullUnified;
 		}
-		else if(uEphemeral)
+		else if(uEphemeral || vEphemeral)
 		{
-			return ECCOnePassUnified;
+			//printf("ECCOnePassUnified \n");
+			type = ECCOnePassUnified;
 		}
 	}
-	else if(vStatic)
+	else if(uStatic || vStatic)
 	{
-		return ECCOnePassDH;
-	}
-	else if(uStatic)
-	{
-
+		//printf("ECCOnePassDH \n");
+		type =  ECCOnePassDH;
 	}
 	else
 	{
-		return ECCEphemeralUnified;
+		//printf("ECCEphemeralUnified \n");
+		type =  ECCEphemeralUnified;
 	}
+	
+	return type;
 }
 
 
@@ -683,6 +690,8 @@ int ECCOnePassDHUnifiedMain(int argc, char **argv)
 			
 
 			eccType = getEccValidateType(uStatic, uEphemeral, vStatic, vEphemeral);
+			//printf("eccType = %d \n", eccType);
+			
 			switch (eccType)
 			{
 				case ECCFullUnified:
@@ -711,12 +720,23 @@ int ECCOnePassDHUnifiedMain(int argc, char **argv)
 
 				case ECCOnePassUnified:
 				{
+
+					//printf("ECCOnePassUnified \n");
 					Z = malloc(Zlen*2);
 					Ze = Z;
 					Zs = Z + Zlen;
 
-					kavasHashZ(group, Ze, Zlen, qsvx, qsvy, deu);
-					kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
+
+					if (uEphemeral)
+					{
+						kavasHashZ(group, Ze, Zlen, qsvx, qsvy, deu);
+						kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
+					}
+					else if (vEphemeral)
+					{
+						kavasHashZ(group, Ze, Zlen, qevx, qevy, dsu);
+						kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
+					}
 
 					Zlen*= 2;
 
@@ -726,16 +746,26 @@ int ECCOnePassDHUnifiedMain(int argc, char **argv)
 				case ECCOnePassDH:
 				{
 					Z = malloc(Zlen);
-
-					kavasHashZ(group, Z, Zlen, qsvx, qsvy, deu);
+					if (vStatic)
+					{
+						kavasHashZ(group, Z, Zlen, qsvx, qsvy, deu);
+					}
+					else if (uStatic)
+					{
+						kavasHashZ(group, Z, Zlen, qevx, qevy, dsu);
+					}
+					
 					break;
 				}
 
 				case ECCStaticUnified:
 				{
-
 					break;
 				}
+
+				default:
+					printf("not found validate type!!!\n");
+					break;
 
 
 
