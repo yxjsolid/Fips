@@ -533,6 +533,7 @@ void genTag(kasvsCfg *curve_cfg, const EVP_MD *kdfMd,
 				unsigned char *Z, int Zlen, 
 				unsigned char *oi, int oiLen,
 				unsigned char *macData, int macDataLen,
+				unsigned char **dkmPtr,
 				unsigned char *tagOut
 				)
 {
@@ -546,7 +547,7 @@ void genTag(kasvsCfg *curve_cfg, const EVP_MD *kdfMd,
 	kavasKDF(kdfMd, Z, Zlen, oi, oiLen, dkm, keySize);
 	myPrintValue("dkm", dkm, keySize);
 	HMAC(curve_cfg->hmacMD, dkm, keySize, macData, macDataLen, tagOut, &tagOutLen);
-	free(dkm);
+	*dkmPtr = dkm;
 }
 
 
@@ -778,11 +779,6 @@ int main(int argc, char **argv)
 			argn--;
 		}
 
-		if (showError == -1)
-		{
-			fprintf(stderr,"%s [forceVerify|genValidateVecotr] [showError|quiet|] [-exout] (infile outfile)\n",argv[0]);
-			exit(1);
-		}
 	}
 
 
@@ -996,7 +992,8 @@ int main(int argc, char **argv)
 						dev, qevx, qevy,
 						dsv, qsvx, qsvy);
 
-				genTag(&(curve_cfg[param_set]), kdfMd, Z, Zlen, oi, oiLen, macData, macDataLen, tagOut);
+				genTag(&(curve_cfg[param_set]), kdfMd, Z, Zlen, oi, oiLen, macData, macDataLen, &dkm, tagOut);
+
 				if (genValidate)
 				{				
 					OutputValue("OI", oi, oiLen,out, 0);
@@ -1008,8 +1005,8 @@ int main(int argc, char **argv)
 					OutputValue("OI", oi, oiLen,out, 0);
 					fprintf(out, "IUTidLen = %d\n", strlen(IUTid));
 					OutputValue("IUTid", IUTid, strlen(IUTid), out, 0);
-					OutputValue("DKM", dkm, keySize, out, 0);
-					OutputValue("Tag", tagOut, tagOutLen, out, 0);
+					OutputValue("DKM", dkm, curve_cfg[param_set].hmacKeyBitSize/8, out, 0);
+					OutputValue("Tag", tagOut, curve_cfg[param_set].hmacTagBitLen/8, out, 0);
 					OutputValue("Message", macData, macDataLen, out, 0);
 				}
 				
@@ -1050,7 +1047,7 @@ int main(int argc, char **argv)
 						dev, qevx, qevy,
 						dsv, qsvx, qsvy);
 
-				genTag(&(curve_cfg[param_set]), kdfMd, Z, Zlen, oi, oiLen, macData, macDataLen, tagOut);
+				genTag(&(curve_cfg[param_set]), kdfMd, Z, Zlen, oi, oiLen, macData, macDataLen, &dkm, tagOut);
 
 				OutputValue("IUTTag", tagOut, tagLen, out, 0);
 				pass = 0;
