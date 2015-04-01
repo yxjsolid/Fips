@@ -733,7 +733,7 @@ int main(int argc, char **argv)
 			else
 			{
 				pass = 1;
-				fputs("Result = P\n", out);
+				fputs("Result = P\r\n", out);
 			}
 			
 			free(Z);
