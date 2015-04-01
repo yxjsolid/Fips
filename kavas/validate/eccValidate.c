@@ -1,13 +1,15 @@
 #include <openssl/crypto.h>
 #include <openssl/bn.h>
 #include <openssl/ecdh.h>
-#include <openssl/fips.h>
+//#include <openssl/fips.h>
 #include <openssl/sha.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #include <string.h>
 #include <ctype.h>
-#include "fips_utl.h"
+#include "ecc_utl.h"
+
+#define RESP_EOL	"\n"
 char *dkmMsg = "Standard Test Message";
 
 typedef enum
@@ -288,7 +290,7 @@ int kavasHashZ(EC_GROUP *group, unsigned char *Z, int zLen, BIGNUM *x, BIGNUM *y
 	int ret;
 
 	ec = EC_KEY_new();
-	EC_KEY_set_flags(ec, EC_FLAG_COFACTOR_ECDH);
+//	EC_KEY_set_flags(ec, EC_FLAG_COFACTOR_ECDH);
 	EC_KEY_set_group(ec, group);
 	peerkey = make_peer(group, x, y);
 

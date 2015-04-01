@@ -10,7 +10,7 @@
 #include <ctype.h>
 //#include "fips_utl.h"
 char *dkmMsg = "Standard Test Message";
-#define RESP_EOL	"\r\n"
+#define RESP_EOL	"\n"
 #define CAVSid "CAVSid"
 #define IUTid "IUTid"
 #define ECC_OTHER_INFO "abcdefghijklmnopqrstuvwxyz0123456789"
