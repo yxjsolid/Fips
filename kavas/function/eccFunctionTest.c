@@ -743,8 +743,8 @@ static int my_ec_print_key(FILE *out, EC_KEY *key, int add_e, int exout)
 	{
 		if (d)
 			do_bn_print_name(out, "dsIUT", d);
-		do_bn_print_name(out, "QsUTx", tx);
-		do_bn_print_name(out, "QsUTy", ty);
+		do_bn_print_name(out, "QsIUTx", tx);
+		do_bn_print_name(out, "QsIUTy", ty);
 		
 	}
 
