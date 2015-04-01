@@ -11,6 +11,9 @@
 
 #define RESP_EOL	"\n"
 char *dkmMsg = "Standard Test Message";
+#define CAVSid "CAVSid"
+#define IUTid "IUTid"
+#define ECC_OTHER_INFO "abcdefghijklmnopqrstuvwxyz0123456789"
 
 typedef enum
 {
@@ -300,16 +303,18 @@ int kavasHashZ(EC_GROUP *group, unsigned char *Z, int zLen, BIGNUM *x, BIGNUM *y
 	myPrintValue("Z", Z, zLen);
 }
 
-int parseEccTestType(char * buff, int *isValidateTest, ECC_VALIDATE_TYPE *eccType, int *isInitiator)
+int parseEccTestType(char * buff, int *isValidateTest, int *isFunctionTest, ECC_VALIDATE_TYPE *eccType, int *isInitiator)
 {
 	ECC_VALIDATE_TYPE type = ECC_TYPE_UNKNOWN;
 
 	*eccType = type;
 	*isInitiator = 0;
+	*isValidateTest =  0;
+	*isFunctionTest = 0;
 
 	if (strstr(buff, "Function"))
 	{
-		*isValidateTest =  0;
+		*isFunctionTest =  1;
 	}
 	else if (strstr(buff, "Validity"))
 	{
@@ -352,14 +357,14 @@ int parseEccTestType(char * buff, int *isValidateTest, ECC_VALIDATE_TYPE *eccTyp
 	return 1;
 }
 
-int parseEccTestParam(char * buf, kasvsCfg *curveCfgPtr, int *isValidateTest, ECC_VALIDATE_TYPE *eccType, int *isInitiator)
+int parseEccTestParam(char * buf, kasvsCfg *curveCfgPtr, int *isValidateTest, int *isFunctionTest, ECC_VALIDATE_TYPE *eccType, int *isInitiator)
 {
 	static int param_set;
 	const EVP_MD *hmacMd = NULL;
 	
 	if(buf[0] == '#' && strstr(buf, "ECC"))
 	{
-		if (!parseEccTestType(buf, isValidateTest, eccType, isInitiator))
+		if (!parseEccTestType(buf, isValidateTest, isFunctionTest, eccType, isInitiator))
 		{
 			printf("parseEccTestType error \n");
 			return -1;
@@ -457,6 +462,9 @@ unsigned char * genZ(EC_GROUP *group, ECC_VALIDATE_TYPE eccType, int *ZlenPtr, i
 			Z = malloc(Zlen*2);
 			Ze = Z;
 			Zs = Z + Zlen;
+
+
+			
 			kavasHashZ(group, Ze, Zlen, qevx, qevy, deu);
 			kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
 			Zlen*= 2;
@@ -532,17 +540,143 @@ void genTag(kasvsCfg *curve_cfg, const EVP_MD *kdfMd,
 	int tagOutLen = 0;
 	unsigned char *dkm;
 	
-
 	keySize = curve_cfg->hmacKeyBitSize/8;
 	dkm = malloc(keySize);
 	memset(dkm, 0, keySize);
 	kavasKDF(kdfMd, Z, Zlen, oi, oiLen, dkm, keySize);
 	myPrintValue("dkm", dkm, keySize);
 	HMAC(curve_cfg->hmacMD, dkm, keySize, macData, macDataLen, tagOut, &tagOutLen);
-
-	printf("tagOutLen = %d \n", tagOutLen);
-	
 	free(dkm);
+}
+
+
+static int my_ec_print_key(FILE *out, EC_KEY *key, int add_e, int exout)
+{
+	const EC_POINT *pt;
+	const EC_GROUP *grp;
+	const EC_METHOD *meth;
+	int rv;
+	BIGNUM *tx, *ty;
+	const BIGNUM *d = NULL;
+	BN_CTX *ctx;
+	ctx = BN_CTX_new();
+	if (!ctx)
+		return 0;
+	tx = BN_CTX_get(ctx);
+	ty = BN_CTX_get(ctx);
+	if (!tx || !ty)
+		return 0;
+
+	
+
+	grp = EC_KEY_get0_group(key);
+
+
+
+	pt = EC_KEY_get0_public_key(key);
+
+
+
+	if (exout)
+		d = EC_KEY_get0_private_key(key);
+
+
+	meth = EC_GROUP_method_of(grp);
+	if (EC_METHOD_get_field_type(meth) == NID_X9_62_prime_field)
+	{	
+
+		rv = EC_POINT_get_affine_coordinates_GFp(grp, pt, tx, ty, ctx);
+
+	}
+	else
+	{
+
+		rv = EC_POINT_get_affine_coordinates_GF2m(grp, pt, tx, ty, ctx);
+
+	}
+
+
+	if (add_e)
+	{
+		if (d)
+			do_bn_print_name(out, "deIUT", d);
+		do_bn_print_name(out, "QeIUTx", tx);
+		do_bn_print_name(out, "QeIUTy", ty);
+		
+	}
+	else
+	{
+		if (d)
+			do_bn_print_name(out, "dsIUT", d);
+		do_bn_print_name(out, "QsIUTx", tx);
+		do_bn_print_name(out, "QsIUTy", ty);
+		
+	}
+
+
+
+	BN_CTX_free(ctx);
+
+	return rv;
+}
+
+void printKey(FILE *out, ECC_VALIDATE_TYPE eccType, EC_KEY *ke, EC_KEY *ks, int isInitiator, int genValidate)
+{
+	switch (eccType)
+	{
+		case ECCFullUnified:
+		{
+			my_ec_print_key(out, ks, 0, genValidate);
+			my_ec_print_key(out, ke, 1, genValidate);
+			break;
+		}
+			
+		case ECCEphemeralUnified:
+		{
+			my_ec_print_key(out, ke, 1, genValidate);
+			break;
+		}
+
+		case ECCOnePassUnified:
+		{
+
+			if (isInitiator)
+			{
+				my_ec_print_key(out, ks, 0, genValidate);
+				my_ec_print_key(out, ke, 1, genValidate);
+			}
+			else
+			{
+				my_ec_print_key(out, ks, 0, genValidate);
+			}
+			break;
+		}
+
+		case ECCOnePassDH:
+		{
+			if (isInitiator)
+			{	
+				my_ec_print_key(out, ke, 1, genValidate);
+			}
+			else
+			{
+				my_ec_print_key(out, ks, 0, genValidate);
+			}
+			
+			break;
+		}
+
+		case ECCStaticUnified:
+		{
+			break;
+		}
+
+		default:
+			printf("not found validate type!!!\n");
+			break;
+
+	}
+
 }
 
 int main(int argc, char **argv)
@@ -606,28 +740,47 @@ int main(int argc, char **argv)
 	int ret = 0;
 	int isInitiator = 1;
 	int isValidateTest = 0;
-	
+	int isFunctionTest = 0;
+	EC_KEY *ke = NULL;
+	EC_KEY *ks = NULL;	
+
+
+	int genValidate = 0;
+	int forceVerify = 0;
 
 	memset((unsigned char*)&(curve_cfg), 0, sizeof (curve_cfg));
+	if (argn && !strcmp(*args, "forceVerify"))
+	{
+		forceVerify = 1;
+		args++;
+		argn--;
+	}
+	else if (argn && !strcmp(*args, "genValidateVecotr"))
+	{
+		genValidate = 1;
+		args++;
+		argn--;
+	}
 
 
 	if (argn && !strcmp(*args, "showError"))
-		{
+	{
 		showError = 1;
 		args++;
 		argn--;
-		}
+	}
 	else if (argn && !strcmp(*args, "quiet"))
-		{
+	{
 		showError = 0;
 		args++;
 		argn--;
-		}
+	}
+
 
 
 	if (showError == -1)
 	{
-		fprintf(stderr,"%s [showError|quiet|] [-exout] (infile outfile)\n",argv[0]);
+		fprintf(stderr,"%s [forceVerify|genValidateVecotr] [showError|quiet|] [-exout] (infile outfile)\n",argv[0]);
 		exit(1);
 	}
 	
@@ -663,9 +816,19 @@ int main(int argc, char **argv)
 	{
 		fputs(buf, out);
 
-		ret = parseEccTestParam(buf, (kasvsCfg *)&curve_cfg, &isValidateTest, &eccType, &isInitiator);
+		ret = parseEccTestParam(buf, (kasvsCfg *)&curve_cfg, &isValidateTest, &isFunctionTest, &eccType, &isInitiator);
 
-		isValidateTest = 1;
+		if (genValidate)
+		{
+			isValidateTest = 0;
+			isFunctionTest = 1;
+		}
+
+		if (forceVerify)
+		{
+			isValidateTest = 1;
+			isFunctionTest = 0;
+		}
 
 		if (ret == -1)
 		{
@@ -787,6 +950,64 @@ int main(int argc, char **argv)
 			macData = malloc(macDataLen);
 			memcpy(macData, dkmMsg, strlen(dkmMsg));
 			memcpy(macData + strlen(dkmMsg), nonce, nonceLen);
+
+			if (isFunctionTest)
+			{
+				if (isInitiator)
+				{
+					memcpy(oi, IUTid, strlen(IUTid));
+					memcpy(oi + strlen(IUTid), CAVSid, strlen(CAVSid));
+				}
+				else
+				{
+					memcpy(oi, CAVSid, strlen(CAVSid));
+					memcpy(oi + strlen(CAVSid), IUTid, strlen(IUTid));
+				}
+				memcpy(oi + strlen(IUTid) + strlen(CAVSid), ECC_OTHER_INFO, strlen(ECC_OTHER_INFO));
+				Zlen = (EC_GROUP_get_degree(group) + 7)/8;
+
+
+				ke = EC_KEY_new();
+				EC_KEY_set_group(ke, group);
+				ret = EC_KEY_generate_key(ke);
+
+
+				ks = EC_KEY_new();
+				EC_KEY_set_group(ks, group);
+				ret = EC_KEY_generate_key(ks);
+
+				printKey(out, eccType, ke, ks, isInitiator, genValidate);
+
+				deu = (BIGNUM *)EC_KEY_get0_private_key(ke);
+				dsu = (BIGNUM *)EC_KEY_get0_private_key(ks);
+				Z = genZ(group, eccType, &Zlen, isInitiator,
+						deu, qeux, qeuy,
+						dsu, qsux, qsuy,
+						dev, qevx, qevy,
+						dsv, qsvx, qsvy);
+
+				genTag(&(curve_cfg[param_set]), kdfMd, Z, Zlen, oi, oiLen, macData, macDataLen, tagOut);
+
+				OutputValue("IUTTag", tagOut, tagLen, out, 0);
+				pass = 0;
+				if (memcmp(tagOut, CAVSTag, tagLen))
+				{
+					pass = 0;
+					fputs("Result = F\n", out);
+					if (showError)
+						printf("error !!! \n");
+					
+				}
+				else
+				{
+					pass = 1;
+					fputs("Result = P\n", out);
+				}
+				
+				free(Z);
+				free(dkm);
+			}
+			
 		}		
 		else if (!strcmp(keyword, "OI"))
 		{
@@ -811,9 +1032,6 @@ int main(int argc, char **argv)
 			}
 			CAVSTag = hex2bin_m(value, &tagLen);
 
-
-			printf("tagLen = %d \n", tagLen);
-			
 			if (isValidateTest)
 			{
 				Z = genZ(group, eccType, &Zlen, isInitiator,
