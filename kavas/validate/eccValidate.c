@@ -1,13 +1,13 @@
 #include <openssl/crypto.h>
 #include <openssl/bn.h>
 #include <openssl/ecdh.h>
-#include <openssl/fips.h>
+//#include <openssl/fips.h>
 #include <openssl/sha.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #include <string.h>
 #include <ctype.h>
-#include "fips_utl.h"
+//#include "fips_utl.h"
 char *dkmMsg = "Standard Test Message";
 
 typedef enum
