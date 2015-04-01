@@ -7,5 +7,3 @@
 ./test.tmp showError ../newGen/KASFunctionTest_ECCOnePassUnified_KDFConcat_NOKC_init.req ../newGen/resp/KASFunctionTest_ECCOnePassUnified_KDFConcat_NOKC_init.resp
 ./test.tmp showError ../newGen/KASFunctionTest_ECCOnePassUnified_KDFConcat_NOKC_resp.req ../newGen/resp/KASFunctionTest_ECCOnePassUnified_KDFConcat_NOKC_resp.resp
 
-
-
