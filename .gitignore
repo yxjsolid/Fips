@@ -6,3 +6,4 @@
 *.xml
 /openssl-fips-2.0.9/*
 /openssl*
+*.tmp
