@@ -14,3 +14,4 @@
 ./test.tmp quiet ../snwl/KASValidityTest_ECCFullUnified_KDFConcat_NOKC_resp.req ../snwl/resp/KASValidityTest_ECCFullUnified_KDFConcat_NOKC_resp.resp
 ./test.tmp quiet ../snwl/KASValidityTest_ECCOnePassDH_KDFConcat_NOKC_resp.req  ../snwl/resp/KASValidityTest_ECCOnePassDH_KDFConcat_NOKC_resp.resp
 ./test.tmp quiet ../snwl/KASValidityTest_ECCOnePassUnified_KDFConcat_NOKC_resp.req ../snwl/resp/KASValidityTest_ECCOnePassUnified_KDFConcat_NOKC_resp.resp
+
