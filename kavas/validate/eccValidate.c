@@ -763,26 +763,30 @@ int main(int argc, char **argv)
 	}
 
 
-	if (argn && !strcmp(*args, "showError"))
+	if (!genValidate)
 	{
-		showError = 1;
-		args++;
-		argn--;
-	}
-	else if (argn && !strcmp(*args, "quiet"))
-	{
-		showError = 0;
-		args++;
-		argn--;
+		if (argn && !strcmp(*args, "showError"))
+		{
+			showError = 1;
+			args++;
+			argn--;
+		}
+		else if (argn && !strcmp(*args, "quiet"))
+		{
+			showError = 0;
+			args++;
+			argn--;
+		}
+
+		if (showError == -1)
+		{
+			fprintf(stderr,"%s [forceVerify|genValidateVecotr] [showError|quiet|] [-exout] (infile outfile)\n",argv[0]);
+			exit(1);
+		}
 	}
 
 
-
-	if (showError == -1)
-	{
-		fprintf(stderr,"%s [forceVerify|genValidateVecotr] [showError|quiet|] [-exout] (infile outfile)\n",argv[0]);
-		exit(1);
-	}
+	
 	
 	if (argn == 2)
 		{
@@ -951,21 +955,27 @@ int main(int argc, char **argv)
 			memcpy(macData, dkmMsg, strlen(dkmMsg));
 			memcpy(macData + strlen(dkmMsg), nonce, nonceLen);
 
+
+			
+			oiLen = strlen(IUTid) + strlen(CAVSid) + strlen(ECC_OTHER_INFO);
+			oi = malloc(oiLen);
+
 			if (isFunctionTest)
 			{
 				if (isInitiator)
 				{
 					memcpy(oi, IUTid, strlen(IUTid));
 					memcpy(oi + strlen(IUTid), CAVSid, strlen(CAVSid));
+					
 				}
 				else
 				{
 					memcpy(oi, CAVSid, strlen(CAVSid));
 					memcpy(oi + strlen(CAVSid), IUTid, strlen(IUTid));
 				}
+
 				memcpy(oi + strlen(IUTid) + strlen(CAVSid), ECC_OTHER_INFO, strlen(ECC_OTHER_INFO));
 				Zlen = (EC_GROUP_get_degree(group) + 7)/8;
-
 
 				ke = EC_KEY_new();
 				EC_KEY_set_group(ke, group);
@@ -975,8 +985,8 @@ int main(int argc, char **argv)
 				ks = EC_KEY_new();
 				EC_KEY_set_group(ks, group);
 				ret = EC_KEY_generate_key(ks);
-
 				printKey(out, eccType, ke, ks, isInitiator, genValidate);
+
 
 				deu = (BIGNUM *)EC_KEY_get0_private_key(ke);
 				dsu = (BIGNUM *)EC_KEY_get0_private_key(ks);
@@ -987,22 +997,22 @@ int main(int argc, char **argv)
 						dsv, qsvx, qsvy);
 
 				genTag(&(curve_cfg[param_set]), kdfMd, Z, Zlen, oi, oiLen, macData, macDataLen, tagOut);
-
-				OutputValue("IUTTag", tagOut, tagLen, out, 0);
-				pass = 0;
-				if (memcmp(tagOut, CAVSTag, tagLen))
-				{
-					pass = 0;
-					fputs("Result = F\n", out);
-					if (showError)
-						printf("error !!! \n");
-					
+				if (genValidate)
+				{				
+					OutputValue("OI", oi, oiLen,out, 0);
+					OutputValue("CAVSTag", tagOut, curve_cfg[param_set].hmacTagBitLen/8, out, 0);
 				}
 				else
 				{
-					pass = 1;
-					fputs("Result = P\n", out);
+					fprintf(out, "OILen = %ld\n", oiLen);
+					OutputValue("OI", oi, oiLen,out, 0);
+					fprintf(out, "IUTidLen = %d\n", strlen(IUTid));
+					OutputValue("IUTid", IUTid, strlen(IUTid), out, 0);
+					OutputValue("DKM", dkm, keySize, out, 0);
+					OutputValue("Tag", tagOut, tagOutLen, out, 0);
+					OutputValue("Message", macData, macDataLen, out, 0);
 				}
+				
 				
 				free(Z);
 				free(dkm);
