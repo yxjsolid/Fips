@@ -604,6 +604,95 @@ int parseEccTestType(char * buff, ECC_VALIDATE_TYPE *eccType, int *isInitiator)
 	return 1;
 }
 
+int parseEccTestParam(char * buff, kasvsCfg *curveCfgPtr, ECC_VALIDATE_TYPE *eccType, int *isInitiator)
+{
+	if(buf[0] == '#' && strstr(buf, "ECC Function Test"))
+		{
+			if (!parseEccTestType(buf,&eccType, &isInitiator))
+			{
+				printf("parseEccTestType error \n");
+				goto parse_error;
+			}
+
+			printf("eccType = %d \n", eccType);
+			printf("isInitiator = %d \n", isInitiator);
+		}
+
+
+		if (buf[0] == '[' && buf[1] == 'E')
+		{
+			int c = buf[2];
+			if (c < 'A' || c > 'E')
+				goto parse_error;
+			param_set = c - 'A';
+			/* If just [E?] then initial paramset */
+			if (buf[3] == ']')
+				continue;
+			if (group)
+				EC_GROUP_free(group);
+			group = EC_GROUP_new_by_curve_name(curve_cfg[c - 'A'].curve_nids);
+		}
+		
+		if (strlen(buf) > 10 && !strncmp(buf, "[Curve", 6))
+		{
+			int nid;
+			if (param_set == -1)
+				goto parse_error;
+			nid = lookup_curve(buf);
+			if (nid == NID_undef)
+				goto parse_error;
+			curve_cfg[param_set].curve_nids = nid;
+			printf("nid = %d \n", nid);
+		}
+
+		if (strlen(buf) > 10 && !strncmp(buf, "[HMAC SHAs", 10))
+		{
+			kdfMd = eparse_hmac_md(buf);
+			if (kdfMd == NULL)
+				goto parse_error;
+
+			curve_cfg[param_set].hmacMD = kdfMd;
+			continue;
+		}
+
+		if (strlen(buf) > 10 && !strncmp(buf, "[HMACKeySize", 12))
+		{
+			int size = -1;
+			size = eparse_size(buf);
+			
+			curve_cfg[param_set].hmacKeyBitSize = size;
+			continue;
+		}
+
+		if (strlen(buf) > 10 && !strncmp(buf, "[HMAC Tag length", 16))
+		{
+			int size = -1;
+			size = eparse_size(buf);
+			
+			curve_cfg[param_set].hmacTagBitLen = size;
+			continue;
+		}
+
+		if (strlen(buf) > 4 && buf[0] == '[' && buf[2] == '-')
+		{
+			int nid = lookup_curve2(buf + 1);
+			if (nid == NID_undef)
+				goto parse_error;
+			if (group)
+				EC_GROUP_free(group);
+			group = EC_GROUP_new_by_curve_name(nid);
+			if (!group)
+				{
+				fprintf(stderr, "ERROR: unsupported curve %s\n", buf + 1);
+				return 1;
+				}
+		}
+
+	return 1;
+}
+
+
+
 
 #if 1
 int My_EC_KEY_generate_key(EC_KEY *eckey)
@@ -808,10 +897,8 @@ int main(int argc, char **argv)
 	int 	cnt = 0;
 	char  bufTmp[128];
 
-	int uStatic = 0, uEphemeral = 0;
-	int vStatic = 0, vEphemeral = 0;
+
 	ECC_VALIDATE_TYPE eccType = 0;
-	
 	unsigned char tagOut[EVP_MAX_MD_SIZE];
     unsigned int tagOutLen;
 	int isInitiator = 1;
@@ -1050,8 +1137,6 @@ int main(int argc, char **argv)
 		{
 			int ret = 0;
 
-			
-
 			if (macData)
 			{
 				free(macData);
@@ -1062,16 +1147,11 @@ int main(int argc, char **argv)
 				OPENSSL_free(nonce);
 			}
 
-		
 			nonce = hex2bin_m((const char *)value, &nonceLen);
-
 			macDataLen = strlen(dkmMsg) + nonceLen;
 			macData = malloc(macDataLen);
 			memcpy(macData, dkmMsg, strlen(dkmMsg));
 			memcpy(macData + strlen(dkmMsg), nonce, nonceLen);
-
-
-
 
 
 			oiLen = strlen(IUTid) + strlen(CAVSid) + strlen(ECC_OTHER_INFO);

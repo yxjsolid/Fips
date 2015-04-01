@@ -327,6 +327,145 @@ ECC_VALIDATE_TYPE getEccValidateType(int uStatic, int uEphemeral, int vStatic, i
 }
 
 
+int parseEccTestType(char * buff, int *isValidateTest, ECC_VALIDATE_TYPE *eccType, int *isInitiator)
+{
+	ECC_VALIDATE_TYPE type = ECC_TYPE_UNKNOWN;
+
+	*eccType = type;
+	*isInitiator = 0;
+
+	if (strstr(buff, "Function"))
+	{
+		*isValidateTest =  0;
+	}
+	else if (strstr(buff, "Validity"))
+	{
+		*isValidateTest =  1;
+	}
+	
+	if (strstr(buff, "dhEphemeralUnified"))
+	{
+		type =  ECCEphemeralUnified;
+	}
+	else if (strstr(buff, "dhFullUnified"))
+	{
+		type =  ECCFullUnified;
+	}
+	else if (strstr(buff, "dhOnePassDH"))
+	{
+		type =  ECCOnePassDH;
+	}
+	else if (strstr(buff, "dhOnePassUnified"))
+	{
+		type =  ECCOnePassUnified;
+	}
+	else if (strstr(buff, "dhStaticUnified"))
+	{
+		type =  ECCStaticUnified;
+	}
+	else
+	{
+		return 0;
+	}
+		
+
+	if(strstr(buff, "Initiator"))
+	{
+		*isInitiator = 1;
+	}
+
+	*eccType = type;
+
+	return 1;
+}
+
+int parseEccTestParam(char * buf, kasvsCfg *curveCfgPtr, int *isValidateTest, ECC_VALIDATE_TYPE *eccType, int *isInitiator)
+{
+	static int param_set;
+	const EVP_MD *hmacMd = NULL;
+	
+	if(buf[0] == '#' && strstr(buf, "ECC"))
+	{
+		if (!parseEccTestType(buf, isValidateTest, eccType, isInitiator))
+		{
+			printf("parseEccTestType error \n");
+			return -1;
+		}
+
+		printf("eccType = %d \n", *eccType);
+		printf("isInitiator = %d \n", *isInitiator);
+	}
+
+
+	if (buf[0] == '[' && buf[1] == 'E')
+	{
+		int c = buf[2];
+		param_set = -1;
+		if (c < 'A' || c > 'E')
+		{
+			printf("error!! %s %d \n", __FUNCTION__, __LINE__);
+			return -1;
+		}
+		param_set = c - 'A';
+		/* If just [E?] then initial paramset */
+		if (buf[3] == ']')
+			return 1;
+	}
+	
+	if (strlen(buf) > 10 && !strncmp(buf, "[Curve", 6))
+	{
+		int nid;
+		if (param_set == -1)
+		{
+			printf("error!! %s %d \n", __FUNCTION__, __LINE__);
+			return -1;
+		}
+		nid = lookup_curve(buf);
+		if (nid == NID_undef)
+		{
+			printf("error!! %s %d \n", __FUNCTION__, __LINE__);
+			return -1;
+		}
+		(curveCfgPtr + param_set)->curve_nids = nid;
+		printf("nid = %d \n", nid);
+	}
+
+	if (strlen(buf) > 10 && !strncmp(buf, "[HMAC SHAs", 10))
+	{
+		hmacMd = eparse_hmac_md(buf);
+		if (hmacMd == NULL)
+		{
+			printf("error!! %s %d \n", __FUNCTION__, __LINE__);
+			return -1;
+		}
+		(curveCfgPtr + param_set)->hmacMD = hmacMd;
+		return 1;
+	}
+
+	if (strlen(buf) > 10 && !strncmp(buf, "[HMACKeySize", 12))
+	{
+		int size = -1;
+		size = eparse_size(buf);
+		
+		(curveCfgPtr + param_set)->hmacKeyBitSize = size;
+		return 1;
+	}
+
+	if (strlen(buf) > 10 && !strncmp(buf, "[HMAC Tag length", 16))
+	{
+		int size = -1;
+		size = eparse_size(buf);
+		
+		(curveCfgPtr + param_set)->hmacTagBitLen = size;
+		return 1;
+	}
+
+
+	return 0;
+}
+
+
+
 int main(int argc, char **argv)
 {
 	char **args = argv + 1;
@@ -387,6 +526,10 @@ int main(int argc, char **argv)
 	unsigned char tagOut[EVP_MAX_MD_SIZE];
     unsigned int tagOutLen;
 	int showError = -1;
+	int ret = 0;
+	int isInitiator = 1;
+	int isValidateTest = 0;
+	
 
 	memset((unsigned char*)&(curve_cfg), 0, sizeof (curve_cfg));
 
@@ -442,11 +585,31 @@ int main(int argc, char **argv)
 	while (fgets(buf, sizeof(buf), in) != NULL)
 	{
 		fputs(buf, out);
+
+		ret = parseEccTestParam(buf, (kasvsCfg *)&curve_cfg, &isValidateTest, &eccType, &isInitiator);
+
+		if (ret == -1)
+		{
+			goto parse_error;
+		}
+		else if (ret == 1)
+		{
+			continue;
+		}
+
+	//	printf("%s \n", buf);
+		//
+		//printf("%s %d \n", __FUNCTION__, __LINE__);
+
+
+
+
 		if (buf[0] == '[' && buf[1] == 'E')
 		{
 			int c = buf[2];
 			if (c < 'A' || c > 'E')
 				goto parse_error;
+
 			param_set = c - 'A';
 			/* If just [E?] then initial paramset */
 			if (buf[3] == ']')
@@ -456,59 +619,6 @@ int main(int argc, char **argv)
 			group = EC_GROUP_new_by_curve_name(curve_cfg[c - 'A'].curve_nids);
 		}
 		
-		if (strlen(buf) > 10 && !strncmp(buf, "[Curve", 6))
-		{
-			int nid;
-			if (param_set == -1)
-				goto parse_error;
-			nid = lookup_curve(buf);
-			if (nid == NID_undef)
-				goto parse_error;
-			curve_cfg[param_set].curve_nids = nid;
-		}
-
-		if (strlen(buf) > 10 && !strncmp(buf, "[HMAC SHAs", 10))
-		{
-			kdfMd = eparse_hmac_md(buf);
-			if (kdfMd == NULL)
-				goto parse_error;
-
-			curve_cfg[param_set].hmacMD = kdfMd;
-			continue;
-		}
-
-		if (strlen(buf) > 10 && !strncmp(buf, "[HMACKeySize", 12))
-		{
-			int size = -1;
-			size = eparse_size(buf);
-			
-			curve_cfg[param_set].hmacKeyBitSize = size;
-			continue;
-		}
-
-		if (strlen(buf) > 10 && !strncmp(buf, "[HMAC Tag length", 16))
-		{
-			int size = -1;
-			size = eparse_size(buf);
-			
-			curve_cfg[param_set].hmacTagBitLen = size;
-			continue;
-		}
-
-		if (strlen(buf) > 4 && buf[0] == '[' && buf[2] == '-')
-		{
-			int nid = lookup_curve2(buf + 1);
-			if (nid == NID_undef)
-				goto parse_error;
-			if (group)
-				EC_GROUP_free(group);
-			group = EC_GROUP_new_by_curve_name(nid);
-			if (!group)
-				{
-				fprintf(stderr, "ERROR: unsupported curve %s\n", buf + 1);
-				return 1;
-				}
-		}
 
 		if (strlen(buf) > 6 && !strncmp(buf, "[E", 2))
 		{
@@ -611,7 +721,6 @@ int main(int argc, char **argv)
 
 		
 			nonce = hex2bin_m((const char *)value, &nonceLen);
-
 			macDataLen = strlen(dkmMsg) + nonceLen;
 			macData = malloc(macDataLen);
 			memcpy(macData, dkmMsg, strlen(dkmMsg));
@@ -639,10 +748,11 @@ int main(int argc, char **argv)
 			{
 				OPENSSL_free(CAVSTag);
 			}
+
+			
 			
 			CAVSTag = hex2bin_m(value, &tagLen);
 			Zlen = (EC_GROUP_get_degree(group) + 7)/8;
-			eccType = getEccValidateType(uStatic, uEphemeral, vStatic, vEphemeral);
 			switch (eccType)
 			{
 				case ECCFullUnified:
@@ -670,12 +780,12 @@ int main(int argc, char **argv)
 					Z = malloc(Zlen*2);
 					Ze = Z;
 					Zs = Z + Zlen;
-					if (uEphemeral)
+					if (isInitiator)
 					{
 						kavasHashZ(group, Ze, Zlen, qsvx, qsvy, deu);
 						kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
 					}
-					else if (vEphemeral)
+					else
 					{
 						kavasHashZ(group, Ze, Zlen, qevx, qevy, dsu);
 						kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
@@ -689,11 +799,11 @@ int main(int argc, char **argv)
 				case ECCOnePassDH:
 				{
 					Z = malloc(Zlen);
-					if (vStatic)
+					if (isInitiator)
 					{
 						kavasHashZ(group, Z, Zlen, qsvx, qsvy, deu);
 					}
-					else if (uStatic)
+					else
 					{
 						kavasHashZ(group, Z, Zlen, qevx, qevy, dsu);
 					}
@@ -735,7 +845,7 @@ int main(int argc, char **argv)
 			else
 			{
 				pass = 1;
-				fputs("Result = P\r\n", out);
+				fputs("Result = P\n", out);
 			}
 			
 			free(Z);
