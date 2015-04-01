@@ -437,6 +437,87 @@ int parseEccTestParam(char * buf, kasvsCfg *curveCfgPtr, int *isValidateTest, EC
 	return 0;
 }
 
+int genZ(EC_GROUP *group, ECC_VALIDATE_TYPE eccType, unsigned char **Z, int *Zlen, int isInitiator,
+			BIGNUM *deu, BIGNUM *qeux, BIGNUM *qeuy,
+			BIGNUM *dsu, BIGNUM *qsux, BIGNUM *qsuy,
+			BIGNUM *dev, BIGNUM *qevx, BIGNUM *qevy,
+			BIGNUM *dsv, BIGNUM *qsvx, BIGNUM *qsvy
+)
+{
+	unsigned char *Zs;
+	unsigned char *Ze;
+
+	switch (eccType)
+	{
+		case ECCFullUnified:
+		{
+			*Z = malloc(*Zlen*2);
+			Ze = *Z;
+			Zs = *Z + *Zlen;
+			kavasHashZ(group, Ze, *Zlen, qevx, qevy, deu);
+			kavasHashZ(group, Zs, *Zlen, qsvx, qsvy, dsu);
+
+			*Zlen*= 2;
+
+			break;
+		}
+			
+		case ECCEphemeralUnified:
+		{
+			*Z = malloc(*Zlen);
+			kavasHashZ(group, *Z, *Zlen, qevx, qevy, deu);
+			break;
+		}
+
+		case ECCOnePassUnified:
+		{
+			*Z = malloc(*Zlen*2);
+			Ze = *Z;
+			Zs = *Z + *Zlen;
+			if (isInitiator)
+			{
+				kavasHashZ(group, Ze, *Zlen, qsvx, qsvy, deu);
+				kavasHashZ(group, Zs, *Zlen, qsvx, qsvy, dsu);
+			}
+			else
+			{
+				kavasHashZ(group, Ze, *Zlen, qevx, qevy, dsu);
+				kavasHashZ(group, Zs, *Zlen, qsvx, qsvy, dsu);
+			}
+
+			*Zlen*= 2;
+
+			break;
+		}
+
+		case ECCOnePassDH:
+		{
+			*Z = malloc(*Zlen);
+			if (isInitiator)
+			{
+				kavasHashZ(group, *Z, *Zlen, qsvx, qsvy, deu);
+			}
+			else
+			{
+				kavasHashZ(group, *Z, *Zlen, qevx, qevy, dsu);
+			}
+			
+			break;
+		}
+
+		case ECCStaticUnified:
+		{
+			break;
+		}
+
+		default:
+			printf("not found validate type!!!\n");
+			break;
+
+	}
+
+
+}
 
 
 int main(int argc, char **argv)
@@ -691,7 +772,6 @@ int main(int argc, char **argv)
 			}
 			
 			oi = hex2bin_m((const char *)value, &oiLen);
-
 		}
 		else if (!strcmp(keyword, "CAVSTag"))
 		{
@@ -706,75 +786,18 @@ int main(int argc, char **argv)
 			
 			
 			CAVSTag = hex2bin_m(value, &tagLen);
+
 			Zlen = (EC_GROUP_get_degree(group) + 7)/8;
-			switch (eccType)
-			{
-				case ECCFullUnified:
-				{
-					Z = malloc(Zlen*2);
-					Ze = Z;
-					Zs = Z + Zlen;
-					kavasHashZ(group, Ze, Zlen, qevx, qevy, deu);
-					kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
 
-					Zlen*= 2;
 
-					break;
-				}
-					
-				case ECCEphemeralUnified:
-				{
-					Z = malloc(Zlen);
-					kavasHashZ(group, Z, Zlen, qevx, qevy, deu);
-					break;
-				}
 
-				case ECCOnePassUnified:
-				{
-					Z = malloc(Zlen*2);
-					Ze = Z;
-					Zs = Z + Zlen;
-					if (isInitiator)
-					{
-						kavasHashZ(group, Ze, Zlen, qsvx, qsvy, deu);
-						kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
-					}
-					else
-					{
-						kavasHashZ(group, Ze, Zlen, qevx, qevy, dsu);
-						kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
-					}
 
-					Zlen*= 2;
-
-					break;
-				}
-
-				case ECCOnePassDH:
-				{
-					Z = malloc(Zlen);
-					if (isInitiator)
-					{
-						kavasHashZ(group, Z, Zlen, qsvx, qsvy, deu);
-					}
-					else
-					{
-						kavasHashZ(group, Z, Zlen, qevx, qevy, dsu);
-					}
-					
-					break;
-				}
-
-				case ECCStaticUnified:
-				{
-					break;
-				}
-
-				default:
-					printf("not found validate type!!!\n");
-					break;
-
-			}
+ 		genZ(group, eccType, &Z, &Zlen, isInitiator,
+			deu, qeux, qeuy,
+			dsu, qsux, qsuy,
+			dev, qevx, qevy,
+			dsv, qsvx, qsvy
+		);
 
 
 			pass = 0;
