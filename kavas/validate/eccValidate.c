@@ -300,33 +300,6 @@ int kavasHashZ(EC_GROUP *group, unsigned char *Z, int zLen, BIGNUM *x, BIGNUM *y
 	myPrintValue("Z", Z, zLen);
 }
 
-ECC_VALIDATE_TYPE getEccValidateType(int uStatic, int uEphemeral, int vStatic, int vEphemeral)
-{
-	ECC_VALIDATE_TYPE type = ECC_TYPE_UNKNOWN;
-	if (uStatic && vStatic)
-	{
-		if (uEphemeral && vEphemeral)
-		{
-			type =  ECCFullUnified;
-		}
-		else if(uEphemeral || vEphemeral)
-		{
-			type = ECCOnePassUnified;
-		}
-	}
-	else if(uStatic || vStatic)
-	{
-		type =  ECCOnePassDH;
-	}
-	else
-	{
-		type =  ECCEphemeralUnified;
-	}
-	
-	return type;
-}
-
-
 int parseEccTestType(char * buff, int *isValidateTest, ECC_VALIDATE_TYPE *eccType, int *isInitiator)
 {
 	ECC_VALIDATE_TYPE type = ECC_TYPE_UNKNOWN;
@@ -519,8 +492,6 @@ int main(int argc, char **argv)
 	int 	cnt = 0;
 	char  bufTmp[128];
 
-	int uStatic = 0, uEphemeral = 0;
-	int vStatic = 0, vEphemeral = 0;
 	ECC_VALIDATE_TYPE eccType = 0;
 	
 	unsigned char tagOut[EVP_MAX_MD_SIZE];
@@ -597,13 +568,6 @@ int main(int argc, char **argv)
 			continue;
 		}
 
-	//	printf("%s \n", buf);
-		//
-		//printf("%s %d \n", __FUNCTION__, __LINE__);
-
-
-
-
 		if (buf[0] == '[' && buf[1] == 'E')
 		{
 			int c = buf[2];
@@ -648,8 +612,6 @@ int main(int argc, char **argv)
 		{
 			if (!do_hex2bn(&qevy, value))
 				goto parse_error;
-
-			vEphemeral = 1;
 		}
 		else if (!strcmp(keyword, "QsCAVSx"))
 		{
@@ -660,8 +622,6 @@ int main(int argc, char **argv)
 		{
 			if (!do_hex2bn(&qsvy, value))
 				goto parse_error;
-
-			vStatic = 1;
 		}
 		else if (!strcmp(keyword, "dsCAVS"))
 		{
@@ -692,8 +652,6 @@ int main(int argc, char **argv)
 		{
 			if (!do_hex2bn(&qsuy, value))
 				goto parse_error;
-
-			uStatic= 1;
 		}
 		else if (!strcmp(keyword, "QeIUTx"))
 		{
@@ -704,22 +662,18 @@ int main(int argc, char **argv)
 		{
 			if (!do_hex2bn(&qeuy, value))
 				goto parse_error;
-			uEphemeral = 1;
 		}
 		else if (!strcmp(keyword, "Nonce"))
 		{
-
 			if (macData)
 			{
 				free(macData);
 			}
-
 			if (nonce)
 			{
 				OPENSSL_free(nonce);
 			}
 
-		
 			nonce = hex2bin_m((const char *)value, &nonceLen);
 			macDataLen = strlen(dkmMsg) + nonceLen;
 			macData = malloc(macDataLen);
