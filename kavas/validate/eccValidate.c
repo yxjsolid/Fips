@@ -384,8 +384,30 @@ int main(int argc, char **argv)
 	
 	unsigned char tagOut[EVP_MAX_MD_SIZE];
     unsigned int tagOutLen;
+	int showError = -1;
 
 	memset((unsigned char*)&(curve_cfg), 0, sizeof (curve_cfg));
+
+
+	if (argn && !strcmp(*args, "showError"))
+		{
+		showError = 1;
+		args++;
+		argn--;
+		}
+	else if (argn && !strcmp(*args, "quiet"))
+		{
+		showError = 0;
+		args++;
+		argn--;
+		}
+
+
+	if (showError == -1)
+	{
+		fprintf(stderr,"%s [showError|quiet|] [-exout] (infile outfile)\n",argv[0]);
+		exit(1);
+	}
 	
 	if (argn == 2)
 		{
@@ -704,6 +726,9 @@ int main(int argc, char **argv)
 			{
 				pass = 0;
 				fputs("Result = F\n", out);
+				if (showError)
+					printf("error !!! \n");
+				
 			}
 			else
 			{
