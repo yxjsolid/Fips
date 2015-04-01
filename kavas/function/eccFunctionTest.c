@@ -741,10 +741,11 @@ static int my_ec_print_key(FILE *out, EC_KEY *key, int add_e, int exout)
 	}
 	else
 	{
-		do_bn_print_name(out, "QIUTx", tx);
-		do_bn_print_name(out, "QIUTy", ty);
 		if (d)
-			do_bn_print_name(out, "QIUTd", d);
+			do_bn_print_name(out, "dsIUT", d);
+		do_bn_print_name(out, "QsUTx", tx);
+		do_bn_print_name(out, "QsUTy", ty);
+		
 	}
 
 
@@ -815,9 +816,35 @@ int main(int argc, char **argv)
     unsigned int tagOutLen;
 	int isInitiator = 1;
 
+	int genValidate = -1;
+
+	EC_KEY *ke = NULL;
+	EC_KEY *ks = NULL;			
+
 	
 	//fips_algtest_init();
 	memset((unsigned char*)&(curve_cfg), 0, sizeof (curve_cfg));
+
+
+	if (argn && !strcmp(*args, "genValidate"))
+		{
+		genValidate = 1;
+		args++;
+		argn--;
+		}
+	else if (argn && !strcmp(*args, "genResp"))
+		{
+		genValidate = 0;
+		args++;
+		argn--;
+		}
+
+
+	if (genValidate == -1)
+	{
+		fprintf(stderr,"%s [genValidate|genResp|] [-exout] (infile outfile)\n",argv[0]);
+		exit(1);
+	}
 	
 	if (argn == 2)
 		{
@@ -1021,9 +1048,6 @@ int main(int argc, char **argv)
 		}
 		else if (!strcmp(keyword, "Nonce"))
 		{
-
-			EC_KEY *ec = NULL;
-			EC_POINT *peerkey = NULL;
 			int ret = 0;
 
 			
@@ -1049,28 +1073,16 @@ int main(int argc, char **argv)
 
 
 
-			ec = EC_KEY_new();
-//			EC_KEY_set_flags(ec, EC_FLAG_COFACTOR_ECDH);
-			EC_KEY_set_group(ec, group);
-			peerkey = make_peer(group, qevx, qevy);
-
-			ret = My_EC_KEY_generate_key(ec);
-
-
-			
 
 			oiLen = strlen(IUTid) + strlen(CAVSid) + strlen(ECC_OTHER_INFO);
-
 			oi = malloc(oiLen);
 
 
 			
 			if (isInitiator)
 			{
-
 				memcpy(oi, IUTid, strlen(IUTid));
 				memcpy(oi + strlen(IUTid), CAVSid, strlen(CAVSid));
-			
 			}
 			else
 			{
@@ -1078,98 +1090,42 @@ int main(int argc, char **argv)
 				memcpy(oi + strlen(CAVSid), IUTid, strlen(IUTid));
 			}
 			memcpy(oi + strlen(IUTid) + strlen(CAVSid), ECC_OTHER_INFO, strlen(ECC_OTHER_INFO));
-			
-
 			Zlen = (EC_GROUP_get_degree(group) + 7)/8;
 
-			Z = malloc(Zlen);
-			kavasHashZ(group, Z, Zlen, qevx, qevy, ec->priv_key);
+
+			ke = EC_KEY_new();
+			EC_KEY_set_group(ke, group);
+			ret = My_EC_KEY_generate_key(ke);
 
 
-			keySize = curve_cfg[param_set].hmacKeyBitSize/8;
-			dkm = malloc(keySize);
-			memset(dkm, 0, keySize);
-			kavasKDF(kdfMd, Z, Zlen, oi, oiLen, dkm, keySize);
-			myPrintValue("dkm", dkm, keySize);
+			ks = EC_KEY_new();
+			EC_KEY_set_group(ks, group);
+			ret = My_EC_KEY_generate_key(ks);
 
-			
-			HMAC(curve_cfg[param_set].hmacMD, dkm, keySize, macData, macDataLen, tagOut, &tagOutLen);
-			myPrintValue("md", tagOut, tagOutLen);
-
-			if (0)
-			{
-				my_ec_print_key(out, ec, 1, 0);
-				fprintf(out, "OILen = %d\n", oiLen);
-				OutputValue("OI", oi, oiLen,out, 0);
-				fprintf(out, "IUTidLen = %d\n", strlen(IUTid));
-				OutputValue("IUTid", IUTid, strlen(IUTid), out, 0);
-				OutputValue("DKM", dkm, keySize, out, 0);
-				OutputValue("Tag", tagOut, tagOutLen, out, 0);
-				OutputValue("Message", macData, macDataLen, out, 0);
-			}
-			else
-			{				
-				my_ec_print_key(out, ec, 1, 1);
-				OutputValue("OI", oi, oiLen,out, 0);
-				OutputValue("CAVSTag", tagOut, tagOutLen, out, 0);
-
-			}
-
-			free(oi);
-
-#if 0
-DKM = ?
-Tag = ?
-Message = ?
-#endif
-
-
-		}		
-		else if (!strcmp(keyword, "OI"))
-		{
-			if (!kdfMd)
-				goto parse_error;
-
-			if (oi)
-			{
-				OPENSSL_free(oi);
-			}
-			
-			oi = hex2bin_m((const char *)value, &oiLen);
-
-		}
-		else if (!strcmp(keyword, "CAVSTag"))
-		{
-			if (!kdfMd)
-				goto parse_error;
-
-			if (CAVSTag)
-			{
-				OPENSSL_free(CAVSTag);
-			}
-			
-			CAVSTag = hex2bin_m(value, &tagLen);
-			Zlen = (EC_GROUP_get_degree(group) + 7)/8;
-			eccType = getEccValidateType(uStatic, uEphemeral, vStatic, vEphemeral);
 			switch (eccType)
 			{
 				case ECCFullUnified:
 				{
+					my_ec_print_key(out, ks, 0, genValidate);
+					my_ec_print_key(out, ke, 1, genValidate);
+					
 					Z = malloc(Zlen*2);
 					Ze = Z;
 					Zs = Z + Zlen;
-					kavasHashZ(group, Ze, Zlen, qevx, qevy, deu);
-					kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
+					kavasHashZ(group, Ze, Zlen, qevx, qevy, ke->priv_key);
+					kavasHashZ(group, Zs, Zlen, qsvx, qsvy, ks->priv_key);
+
 
 					Zlen*= 2;
-
 					break;
 				}
 					
 				case ECCEphemeralUnified:
 				{
+					my_ec_print_key(out, ke, 1, genValidate);
+					
 					Z = malloc(Zlen);
-					kavasHashZ(group, Z, Zlen, qevx, qevy, deu);
+					kavasHashZ(group, Z, Zlen, qevx, qevy, ke->priv_key);
 					break;
 				}
 
@@ -1178,15 +1134,19 @@ Message = ?
 					Z = malloc(Zlen*2);
 					Ze = Z;
 					Zs = Z + Zlen;
-					if (uEphemeral)
+					if (isInitiator)
 					{
-						kavasHashZ(group, Ze, Zlen, qsvx, qsvy, deu);
-						kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
+						my_ec_print_key(out, ks, 0, genValidate);
+						my_ec_print_key(out, ke, 1, genValidate);
+					
+						kavasHashZ(group, Ze, Zlen, qsvx, qsvy, ke->priv_key);
+						kavasHashZ(group, Zs, Zlen, qsvx, qsvy, ks->priv_key);
 					}
-					else if (vEphemeral)
+					else
 					{
-						kavasHashZ(group, Ze, Zlen, qevx, qevy, dsu);
-						kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
+						my_ec_print_key(out, ks, 0, genValidate);
+						kavasHashZ(group, Ze, Zlen, qevx, qevy, ks->priv_key);
+						kavasHashZ(group, Zs, Zlen, qsvx, qsvy, ks->priv_key);
 					}
 
 					Zlen*= 2;
@@ -1197,13 +1157,15 @@ Message = ?
 				case ECCOnePassDH:
 				{
 					Z = malloc(Zlen);
-					if (vStatic)
-					{
-						kavasHashZ(group, Z, Zlen, qsvx, qsvy, deu);
+					if (isInitiator)
+					{	
+						my_ec_print_key(out, ke, 1, genValidate);
+						kavasHashZ(group, Z, Zlen, qsvx, qsvy, ke->priv_key);
 					}
-					else if (uStatic)
+					else
 					{
-						kavasHashZ(group, Z, Zlen, qevx, qevy, dsu);
+						my_ec_print_key(out, ks, 0, genValidate);
+						kavasHashZ(group, Z, Zlen, qevx, qevy, ks->priv_key);
 					}
 					
 					break;
@@ -1221,51 +1183,35 @@ Message = ?
 			}
 
 
-			pass = 0;
-
 			keySize = curve_cfg[param_set].hmacKeyBitSize/8;
 			dkm = malloc(keySize);
 			memset(dkm, 0, keySize);
 			kavasKDF(kdfMd, Z, Zlen, oi, oiLen, dkm, keySize);
 			myPrintValue("dkm", dkm, keySize);
+
 			
 			HMAC(curve_cfg[param_set].hmacMD, dkm, keySize, macData, macDataLen, tagOut, &tagOutLen);
-			myPrintValue("md", tagOut, tagLen);
-			OutputValue("IUTTag", tagOut, tagLen, out, 0);
-			if (memcmp(tagOut, CAVSTag, tagLen))
-			{
-				pass = 0;
-				fputs("Result = F\n", out);
-			}
-			else
-			{
-				pass = 1;
-				fputs("Result = P\n", out);
-			}
-			
-			free(Z);
-			free(dkm);
-			
-		}
-		else if (!strcmp(keyword, "Result"))
-		{
-			if (pass)
-			{
-				if (value[0] != 'P')
-				{
-					printf("error!");
-				}
-			}
-			else
-			{
-				if (value[0] != 'F')
-				{
-					printf("bufTmp = %s cnt[%d], error!\n",bufTmp, cnt);
-				}
-			}
-		}
-		
+			myPrintValue("md", tagOut, tagOutLen);
 
+			if (genValidate)
+			{				
+				OutputValue("OI", oi, oiLen,out, 0);
+				OutputValue("CAVSTag", tagOut, tagOutLen, out, 0);
+			}
+			else
+			{
+				fprintf(out, "OILen = %d\n", oiLen);
+				OutputValue("OI", oi, oiLen,out, 0);
+				fprintf(out, "IUTidLen = %d\n", strlen(IUTid));
+				OutputValue("IUTid", IUTid, strlen(IUTid), out, 0);
+				OutputValue("DKM", dkm, keySize, out, 0);
+				OutputValue("Tag", tagOut, tagOutLen, out, 0);
+				OutputValue("Message", macData, macDataLen, out, 0);
+			}
+
+			free(oi);
+
+		}		
 	}
 	rv = 0;
 	parse_error:
