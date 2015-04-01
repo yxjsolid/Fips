@@ -437,71 +437,70 @@ int parseEccTestParam(char * buf, kasvsCfg *curveCfgPtr, int *isValidateTest, EC
 	return 0;
 }
 
-int genZ(EC_GROUP *group, ECC_VALIDATE_TYPE eccType, unsigned char **Z, int *Zlen, int isInitiator,
+unsigned char * genZ(EC_GROUP *group, ECC_VALIDATE_TYPE eccType, int *ZlenPtr, int isInitiator,
 			BIGNUM *deu, BIGNUM *qeux, BIGNUM *qeuy,
 			BIGNUM *dsu, BIGNUM *qsux, BIGNUM *qsuy,
 			BIGNUM *dev, BIGNUM *qevx, BIGNUM *qevy,
 			BIGNUM *dsv, BIGNUM *qsvx, BIGNUM *qsvy
 )
 {
+	unsigned char *Z = NULL;
 	unsigned char *Zs;
 	unsigned char *Ze;
+	
+	int Zlen = (EC_GROUP_get_degree(group) + 7)/8;
 
 	switch (eccType)
 	{
 		case ECCFullUnified:
 		{
-			*Z = malloc(*Zlen*2);
-			Ze = *Z;
-			Zs = *Z + *Zlen;
-			kavasHashZ(group, Ze, *Zlen, qevx, qevy, deu);
-			kavasHashZ(group, Zs, *Zlen, qsvx, qsvy, dsu);
-
-			*Zlen*= 2;
-
+			Z = malloc(Zlen*2);
+			Ze = Z;
+			Zs = Z + Zlen;
+			kavasHashZ(group, Ze, Zlen, qevx, qevy, deu);
+			kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
+			Zlen*= 2;
 			break;
 		}
 			
 		case ECCEphemeralUnified:
 		{
-			*Z = malloc(*Zlen);
-			kavasHashZ(group, *Z, *Zlen, qevx, qevy, deu);
+			Z = malloc(Zlen);
+			kavasHashZ(group, Z, Zlen, qevx, qevy, deu);
 			break;
 		}
 
 		case ECCOnePassUnified:
 		{
-			*Z = malloc(*Zlen*2);
-			Ze = *Z;
-			Zs = *Z + *Zlen;
+			Z = malloc(Zlen*2);
+			Ze = Z;
+			Zs = Z + Zlen;
 			if (isInitiator)
 			{
-				kavasHashZ(group, Ze, *Zlen, qsvx, qsvy, deu);
-				kavasHashZ(group, Zs, *Zlen, qsvx, qsvy, dsu);
+				kavasHashZ(group, Ze, Zlen, qsvx, qsvy, deu);
+				kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
 			}
 			else
 			{
-				kavasHashZ(group, Ze, *Zlen, qevx, qevy, dsu);
-				kavasHashZ(group, Zs, *Zlen, qsvx, qsvy, dsu);
+				kavasHashZ(group, Ze, Zlen, qevx, qevy, dsu);
+				kavasHashZ(group, Zs, Zlen, qsvx, qsvy, dsu);
 			}
 
-			*Zlen*= 2;
-
+			Zlen*= 2;
 			break;
 		}
 
 		case ECCOnePassDH:
 		{
-			*Z = malloc(*Zlen);
+			Z = malloc(Zlen);
 			if (isInitiator)
 			{
-				kavasHashZ(group, *Z, *Zlen, qsvx, qsvy, deu);
+				kavasHashZ(group, Z, Zlen, qsvx, qsvy, deu);
 			}
 			else
 			{
-				kavasHashZ(group, *Z, *Zlen, qevx, qevy, dsu);
+				kavasHashZ(group, Z, Zlen, qevx, qevy, dsu);
 			}
-			
 			break;
 		}
 
@@ -516,9 +515,35 @@ int genZ(EC_GROUP *group, ECC_VALIDATE_TYPE eccType, unsigned char **Z, int *Zle
 
 	}
 
+	*ZlenPtr = Zlen;
+	return Z;
 
 }
 
+
+void genTag(kasvsCfg *curve_cfg, const EVP_MD *kdfMd, 
+				unsigned char *Z, int Zlen, 
+				unsigned char *oi, int oiLen,
+				unsigned char *macData, int macDataLen,
+				unsigned char *tagOut
+				)
+{
+	int keySize = 0;
+	int tagOutLen = 0;
+	unsigned char *dkm;
+	
+
+	keySize = curve_cfg->hmacKeyBitSize/8;
+	dkm = malloc(keySize);
+	memset(dkm, 0, keySize);
+	kavasKDF(kdfMd, Z, Zlen, oi, oiLen, dkm, keySize);
+	myPrintValue("dkm", dkm, keySize);
+	HMAC(curve_cfg->hmacMD, dkm, keySize, macData, macDataLen, tagOut, &tagOutLen);
+
+	printf("tagOutLen = %d \n", tagOutLen);
+	
+	free(dkm);
+}
 
 int main(int argc, char **argv)
 {
@@ -639,6 +664,8 @@ int main(int argc, char **argv)
 		fputs(buf, out);
 
 		ret = parseEccTestParam(buf, (kasvsCfg *)&curve_cfg, &isValidateTest, &eccType, &isInitiator);
+
+		isValidateTest = 1;
 
 		if (ret == -1)
 		{
@@ -782,51 +809,40 @@ int main(int argc, char **argv)
 			{
 				OPENSSL_free(CAVSTag);
 			}
-
-			
-			
 			CAVSTag = hex2bin_m(value, &tagLen);
 
-			Zlen = (EC_GROUP_get_degree(group) + 7)/8;
 
-
-
-
- 		genZ(group, eccType, &Z, &Zlen, isInitiator,
-			deu, qeux, qeuy,
-			dsu, qsux, qsuy,
-			dev, qevx, qevy,
-			dsv, qsvx, qsvy
-		);
-
-
-			pass = 0;
-
-			keySize = curve_cfg[param_set].hmacKeyBitSize/8;
-			dkm = malloc(keySize);
-			memset(dkm, 0, keySize);
-			kavasKDF(kdfMd, Z, Zlen, oi, oiLen, dkm, keySize);
-			myPrintValue("dkm", dkm, keySize);
+			printf("tagLen = %d \n", tagLen);
 			
-			HMAC(curve_cfg[param_set].hmacMD, dkm, keySize, macData, macDataLen, tagOut, &tagOutLen);
-			myPrintValue("md", tagOut, tagLen);
-			OutputValue("IUTTag", tagOut, tagLen, out, 0);
-			if (memcmp(tagOut, CAVSTag, tagLen))
+			if (isValidateTest)
 			{
+				Z = genZ(group, eccType, &Zlen, isInitiator,
+						deu, qeux, qeuy,
+						dsu, qsux, qsuy,
+						dev, qevx, qevy,
+						dsv, qsvx, qsvy);
+
+				genTag(&(curve_cfg[param_set]), kdfMd, Z, Zlen, oi, oiLen, macData, macDataLen, tagOut);
+
+				OutputValue("IUTTag", tagOut, tagLen, out, 0);
 				pass = 0;
-				fputs("Result = F\n", out);
-				if (showError)
-					printf("error !!! \n");
+				if (memcmp(tagOut, CAVSTag, tagLen))
+				{
+					pass = 0;
+					fputs("Result = F\n", out);
+					if (showError)
+						printf("error !!! \n");
+					
+				}
+				else
+				{
+					pass = 1;
+					fputs("Result = P\n", out);
+				}
 				
+				free(Z);
+				free(dkm);
 			}
-			else
-			{
-				pass = 1;
-				fputs("Result = P\n", out);
-			}
-			
-			free(Z);
-			free(dkm);
 			
 		}
 		else if (!strcmp(keyword, "Result"))
@@ -847,7 +863,6 @@ int main(int argc, char **argv)
 			}
 		}
 		
-
 	}
 	rv = 0;
 	parse_error:
